@@ -1,5 +1,6 @@
 #include <stdint.h>
 #include <asm/io.h>
+#include <fritter/kernel.h>
 
 const unsigned char color = 0x02;
 uint16_t *tty_buf = (uint16_t *) 0xB8000;
@@ -48,8 +49,14 @@ void deccur() {
   }
 }
 
+// Prints a character to the main screen
+void putchar(char c) {
+  tty_buf[y * WIDTH + x] = (uint16_t) c | (uint16_t) color << 8;
+}
+
 // Prints a character to the screen
 void putc(char c) {
-  tty_buf[y * WIDTH + x] = (uint16_t) c | (uint16_t) color << 8;
+  putchar(c);
+  write_serial(c); // All standard output is also written to COM port 1
   inccur();
 }

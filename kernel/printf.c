@@ -9,7 +9,7 @@ void printf(const char *s, ...) {
   va_list arg;
   va_start(arg, s);
   
-  while ((c = (char *)*s) != '\0') {
+  while ((c = (char)*s) != '\0') {
     if (c != '%') {
       putc(c);
       s++;

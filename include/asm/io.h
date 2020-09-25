@@ -1,6 +1,8 @@
 # ifndef __ASM_IO_H__
 # define __ASM_TO_H__
 
+#include <stdint.h>
+
 static inline uint8_t inb(uint16_t port)
 {
   uint8_t ret;
