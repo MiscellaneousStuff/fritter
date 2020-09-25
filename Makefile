@@ -2,6 +2,7 @@ LD = i686-elf-ld
 LDFLAGS = -T misc/linker.ld
 
 OBJS = boot/boot.o init/init.o kernel/kernel.o
+LIBS = lib/lib.a
 
 all: kernel.elf
 
@@ -14,8 +15,11 @@ init/init.o:
 kernel/kernel.o:
 	(cd kernel; make)
 
-kernel.elf: $(OBJS)
-	$(LD) $(LDFLAGS) $(OBJS) -o kernel.elf
+lib/lib.a:
+	(cd lib; make)
+
+kernel.elf: $(OBJS) $(LIBS)
+	$(LD) $(LDFLAGS) $(OBJS) $(LIBS) -o kernel.elf
 
 run: kernel.elf
 	qemu-system-i386 -kernel kernel.elf
@@ -33,4 +37,5 @@ clean:
 	(cd boot; make clean)
 	(cd init; make clean)
 	(cd kernel; make clean)
+	(cd lib; make clean)
 	rm -rf kernel.elf isodir fritter.iso

@@ -12,4 +12,4 @@ boot.o:
 	$(LD) $(LDFLAGS) $(OBJS) -o init.o
 
 clean:
-	rm -rf .o
+	rm -rf *.o

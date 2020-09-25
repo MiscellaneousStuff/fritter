@@ -1,7 +1,7 @@
 #include <stdint.h>
 #include <asm/io.h>
 
-const unsigned char color = 0x07;
+const unsigned char color = 0x02;
 uint16_t *tty_buf = (uint16_t *) 0xB8000;
 
 const unsigned int WIDTH = 80;
