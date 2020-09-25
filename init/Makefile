@@ -1,5 +1,5 @@
 CC = i686-elf-gcc
-CFLAGS = -O2 -Wall -Wextra --freestanding -c
+CFLAGS = -O2 -Wall -Wextra --freestanding -I../include -c
 LD = i686-elf-ld
 LDFLAGS = -r -T ../misc/linker.ld
 
