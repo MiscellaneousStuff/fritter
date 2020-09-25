@@ -1,8 +1,10 @@
+#define TAB_SIZE 8
+
 #include <stdint.h>
 #include <asm/io.h>
 #include <fritter/kernel.h>
 
-const unsigned char color = 0x02;
+const unsigned char color = 0x07;
 uint16_t *tty_buf = (uint16_t *) 0xB8000;
 
 const unsigned int WIDTH = 80;
@@ -10,6 +12,7 @@ const unsigned int HEIGHT = 25;
 
 unsigned int x = 0;
 unsigned int y = 0;
+
 
 // Disables the inbuilt VGA cursor
 void discur() {
@@ -29,13 +32,18 @@ void init_tty() {
   clrscr();
 }
 
+// Moves the cursor to the new line (NOTE: Wraps around the screen, doesn't buffer offscreen text)
+void newline() {
+  x = 0;
+  if (++y == HEIGHT) {
+    y = 0;
+  }
+}
+
 // Increments the cursor (NOTE: Wraps around the screen)
 void inccur() {
   if (++x == WIDTH) {
-    x = 0;
-    if (++y == HEIGHT) {
-      y = 0;
-    }
+    newline();
   }
 }
 
@@ -49,14 +57,38 @@ void deccur() {
   }
 }
 
+// Output char to a specific co-ordinate on the screen
+void print_char(char c, unsigned int x, unsigned int y, unsigned char color) {
+  tty_buf[y * WIDTH + x] = (uint16_t) c | (uint16_t) color << 8;
+}
+
+
 // Prints a character to the main screen
 void putchar(char c) {
-  tty_buf[y * WIDTH + x] = (uint16_t) c | (uint16_t) color << 8;
+  unsigned int padding;
+  switch (c) {
+    case '\t':
+      padding = (TAB_SIZE - (x % TAB_SIZE));
+      for (unsigned int i=0; i<padding; i++)
+        putchar(' ');
+      break;
+    case '\n':
+      newline();
+      break;
+    case '\b':
+      deccur();
+      putchar(' ');
+      deccur();
+      break;
+    default:
+      print_char(c, x, y, color);
+      inccur();
+      break;
+  }
 }
 
 // Prints a character to the screen
 void putc(char c) {
   putchar(c);
   write_serial(c); // All standard output is also written to COM port 1
-  inccur();
 }
