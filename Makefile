@@ -1,7 +1,7 @@
 LD = i686-elf-ld
 LDFLAGS = -T misc/linker.ld
 
-OBJS = boot/boot.o init/init.o
+OBJS = boot/boot.o init/init.o kernel/kernel.o
 
 all: kernel.elf
 
@@ -10,6 +10,9 @@ boot/boot.o:
 
 init/init.o:
 	(cd init; make)
+
+kernel/kernel.o:
+	(cd kernel; make)
 
 kernel.elf: $(OBJS)
 	$(LD) $(LDFLAGS) $(OBJS) -o kernel.elf
@@ -29,4 +32,5 @@ fritter.iso: kernel.elf
 clean:
 	(cd boot; make clean)
 	(cd init; make clean)
+	(cd kernel; make clean)
 	rm -rf kernel.elf isodir fritter.iso
