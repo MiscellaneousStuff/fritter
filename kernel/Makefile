@@ -3,7 +3,7 @@ CFLAGS = -O2 -Wall -Wextra --freestanding -I../include -c
 LD = i686-elf-ld
 LDFLAGS = -r -T ../misc/linker.ld
 
-OBJS = printf.o
+OBJS = printf.o tty.o
 
 all: kernel.o
 
