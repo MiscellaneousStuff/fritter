@@ -30,12 +30,22 @@ void init_tty() {
   clrscr();
 }
 
-// Increments the cursor
+// Increments the cursor (NOTE: Wraps around the screen)
 void inccur() {
   if (++x == WIDTH) {
     x = 0;
     if (++y == HEIGHT) {
       y = 0;
+    }
+  }
+}
+
+// Decrements the cursor (NOTE: Wraps around the screen)
+void deccur() {
+  if (--x == 0) {
+    x = WIDTH-1;
+    if (--y == 0) {
+      y = HEIGHT-1;
     }
   }
 }
