@@ -6,3 +6,4 @@ void init_serial();
 void printf(const char *s, ...);
 void putc(char c);
 void write_serial(char c);
+void clrscr();

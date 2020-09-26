@@ -61,11 +61,18 @@ int kmain() {
 
     // Get Command
     gets(cmd);
+    printf("\n");
 
     // Determine command
     if (strncmp(cmd, "help", strlen(cmd)) == 0) {
-      printf("\n");
-      printf("help - Prints this help information");
+      printf("clear\t Clears the screen\n");
+      printf("help\t Prints this help information");
+    } else if (strncmp(cmd, "clear", strlen(cmd)) == 0) {
+      clrscr();
+    } else if (strncmp(cmd, "echo ", 5) == 0) {
+      printf(cmd+5);
+    } else {
+      printf("%s is an unknown command. Try again.", cmd);
     }
 
     // Newline

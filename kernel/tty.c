@@ -13,6 +13,11 @@ const int HEIGHT = 25;
 int x = 0;
 int y = 0;
 
+void rescur() {
+  x = 0;
+  y = 0;
+}
+
 // Disables the inbuilt VGA cursor
 void discur() {
   outb(0x3D4, 0x0A);
@@ -21,6 +26,7 @@ void discur() {
 
 // Clears the screen
 void clrscr() {
+  rescur();
   for (unsigned int i=0; i<(WIDTH * HEIGHT); i++) {
     tty_buf[i] = 0;
   }
