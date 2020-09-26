@@ -1,3 +1,5 @@
+#include <stddef.h>
+
 #include <fritter/kernel.h>
 
 #include "gdt.h"
@@ -5,6 +7,29 @@
 #include "keyboard.h"
 #include "timer.h"
 
+// 219 = block
+
+void *gets(char *s) {
+  size_t n = 0;
+  for (;;) {
+    char c = keyboard_getchar();
+    if (c) {
+      if (c == '\b' && n > 0) {
+        s--;
+        n--;
+        putc('\b');
+      } else if (c == '\n') {
+        *s = '\0';
+        break;
+      } else {
+        *s++ = c;
+        n++;
+        putc(c);
+      }
+    }
+  }
+}
+ 
 int kmain() {
   // Init Global/Interrupt Descriptor Tables
   init_gdt();
@@ -13,7 +38,7 @@ int kmain() {
   // Init screen
   init_tty();
 
-  printf("Welcome to fritter!\n> ");
+  printf("Welcome to fritter!\n");
   // printf("> \n");
 
   // Enable Interrupts
@@ -26,10 +51,13 @@ int kmain() {
   init_keyboard_driver();
 
   // Print char from user
+  char cmd[100];
+
+  // CMD loop
   for (;;) {
-    char c = keyboard_getchar();
-    if (c)
-      printf("%c", c);
+    printf("> ");
+    gets(cmd);
+    printf("\n%s\n", cmd);
   }
 
   // Wait for timing events

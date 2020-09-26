@@ -5,6 +5,16 @@
 #include <stdint.h>
 #include <stddef.h>
 
+int strncmp(const char *str1, const char *str2, size_t num) {
+  for (size_t i=0; i<num; i++) {
+    char a = str1[i];
+    char b = str2[i];
+    if (a != b)
+      return a - b;
+  }
+  return 0;
+}
+
 void *memset(void *b, int c, int len) {
   //int i;
   unsigned char *p = b;

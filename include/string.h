@@ -8,5 +8,6 @@ void *memset(void *b, int c, int len);
 size_t strlen(const char *s);
 void reverse(char *s);
 void itoa(int n, char *s, int radix);
+int strncmp(const char *str1, const char *str2, size_t num);
 
 #endif

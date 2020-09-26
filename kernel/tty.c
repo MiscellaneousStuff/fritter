@@ -7,12 +7,11 @@
 const unsigned char color = 0x07;
 uint16_t *tty_buf = (uint16_t *) 0xB8000;
 
-const unsigned int WIDTH = 80;
-const unsigned int HEIGHT = 25;
+const int WIDTH = 80;
+const int HEIGHT = 25;
 
-unsigned int x = 0;
-unsigned int y = 0;
-
+int x = 0;
+int y = 0;
 
 // Disables the inbuilt VGA cursor
 void discur() {
@@ -49,10 +48,12 @@ void inccur() {
 
 // Decrements the cursor (NOTE: Wraps around the screen)
 void deccur() {
-  if (--x == 0) {
-    x = WIDTH-1;
-    if (--y == 0) {
-      y = HEIGHT-1;
+  x -= 1;
+  if (x == 0) {
+    x = WIDTH - 1;
+    y -= 1;
+    if (y == 0) {
+      y = HEIGHT - 1;
     }
   }
 }
@@ -61,7 +62,6 @@ void deccur() {
 void print_char(char c, unsigned int x, unsigned int y, unsigned char color) {
   tty_buf[y * WIDTH + x] = (uint16_t) c | (uint16_t) color << 8;
 }
-
 
 // Prints a character to the main screen
 void putchar(char c) {
@@ -77,8 +77,7 @@ void putchar(char c) {
       break;
     case '\b':
       deccur();
-      putchar(' ');
-      deccur();
+      print_char(' ', x, y, color);
       break;
     default:
       print_char(c, x, y, color);
