@@ -1,4 +1,5 @@
 #include <stddef.h>
+#include <string.h>
 
 #include <fritter/kernel.h>
 
@@ -55,9 +56,20 @@ int kmain() {
 
   // CMD loop
   for (;;) {
+    // Prompt
     printf("> ");
+
+    // Get Command
     gets(cmd);
-    printf("\n%s\n", cmd);
+
+    // Determine command
+    if (strncmp(cmd, "help", strlen(cmd)) == 0) {
+      printf("\n");
+      printf("help - Prints this help information");
+    }
+
+    // Newline
+    printf("\n");
   }
 
   // Wait for timing events
