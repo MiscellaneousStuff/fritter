@@ -11,7 +11,7 @@ uint32_t tick = 0;
 static void timer_callback(registers_t *regs) {
   (void) regs;
   tick++;
-  printf("Tick %d\n", tick);
+  // printf("Tick %d\n", tick);
 }
 
 void init_timer(uint32_t frequency) {
@@ -26,6 +26,4 @@ void init_timer(uint32_t frequency) {
 
   outb(0x40, low);
   outb(0x40, high);
-
-  printf("init_timer(): %d %d\n", frequency, divisor, tick);
 }

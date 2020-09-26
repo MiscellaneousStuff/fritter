@@ -29,6 +29,9 @@ void printf(const char *s, ...) {
         itoa(va_arg(arg, int), buf, 16);
         printf(buf);
         break;
+      case 'c':
+        putc(va_arg(arg, int));
+        break;
     }
     s++;
   }
