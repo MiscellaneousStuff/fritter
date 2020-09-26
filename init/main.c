@@ -7,6 +7,7 @@
 #include "idt.h"
 #include "keyboard.h"
 #include "timer.h"
+#include "rtc.h"
 
 // 219 = block
 
@@ -36,11 +37,14 @@ int kmain() {
   init_gdt();
   init_idt();
 
+  // Init date/time
+  read_rtc();
+
   // Init screen
   init_tty();
 
+  // Welcome message
   printf("Welcome to fritter!\n");
-  // printf("> \n");
 
   // Enable Interrupts
   asm volatile("sti");
@@ -71,6 +75,8 @@ int kmain() {
       clrscr();
     } else if (strncmp(cmd, "echo ", 5) == 0) {
       printf(cmd+5);
+    } else if (strncmp(cmd, "time", 4) == 0) {
+      printf("%04d/%02d/%02d %02d:%02d:%02d", year, month, day, hour, minute, second);
     } else {
       printf("%s is an unknown command. Try again.", cmd);
     }

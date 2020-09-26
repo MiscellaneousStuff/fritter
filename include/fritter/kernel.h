@@ -1,6 +1,7 @@
 // Initialisers
 void init_tty();
 void init_serial();
+void read_rtc();
 
 // Functions
 void printf(const char *s, ...);
