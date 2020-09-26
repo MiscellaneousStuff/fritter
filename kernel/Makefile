@@ -1,11 +1,16 @@
+AS = nasm
+ASFLAGS = -felf32
 CC = i686-elf-gcc
 CFLAGS = -O2 -Wall -Wextra --freestanding -I../include -c
 LD = i686-elf-ld
 LDFLAGS = -r -T ../misc/linker.ld
 
-OBJS = printf.o serial.o tty.o
+OBJS = asm.o gdt.o idt.o printf.o serial.o tty.o
 
 all: kernel.o
+
+%.o: %.asm
+	$(AS) $(ASFLAGS) $< -o $@
 
 %.o: %.c
 	$(CC) $(CFLAGS) $< -o $@
