@@ -2,6 +2,7 @@
 
 #include "gdt.h"
 #include "idt.h"
+#include "timer.h"
 
 void kmain() {
   init_gdt();
@@ -10,7 +11,11 @@ void kmain() {
   init_tty();
 
   printf("Welcome to fritter!\n");
-  printf("> ");
+  // printf("> \n");
 
-  asm volatile ("int $0x03");
+  init_timer(100);
+
+  // Enable interrupts and wait for them
+  asm volatile("sti");
+  for (;;) {}
 }
