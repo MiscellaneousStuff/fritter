@@ -3,6 +3,9 @@
 
 #include <fritter/kernel.h>
 
+#include "multiboot.h"
+#include "vesa.h"
+
 #include "gdt.h"
 #include "idt.h"
 
@@ -35,7 +38,7 @@ void *gets(char *s) {
   }
 }
  
-int kmain() {
+int kmain(multiboot_t *mb_info) {
   // Init Global/Interrupt Descriptor Tables
   init_gdt();
   init_idt();
@@ -58,6 +61,9 @@ int kmain() {
   // Init Keyboard and Mouse Drivers
   init_keyboard_driver();
   init_mouse();
+
+  // Init Graphics
+  init_vesa();
 
   // Print char from user
   char cmd[100];
@@ -83,6 +89,20 @@ int kmain() {
       printf("%04d/%02d/%02d %02d:%02d:%02d", year, month, day, hour, minute, second);
     } else if (strncmp(cmd, "mouse", 5) == 0) {
       printf("mouse co-ords := X: %d Y: %d", mouse_x, mouse_y);
+    } else if (strncmp(cmd, "vbe", 3) == 0) {
+      vbe_info_t *info = (vbe_info_t *) mb_info->vbe_mode_info;
+
+      memset(mb_info->framebuffer_addr, 0xAAAAAAAA, 640*480*4);
+
+      printf("VBE Version:\t\t%d\n", (info->version & 0xFF00));
+
+      printf("Bootloader:\t\t%s\n", mb_info->boot_loader_name);
+      printf("VBE Mode:\t\t%d\n", mb_info->vbe_mode);
+      printf("MEM Upper\t\t0x%x\n", mb_info->mem_upper);
+      printf("MEM Lower\t\t0x%x\n", mb_info->mem_lower);
+      printf("Boot Device\t\t%d\n", mb_info->boot_device);
+      printf("Module Count\t\t%d\n", mb_info->mods_count);
+      printf("CMD Line\t\t0x%x", mb_info->cmdline);
     } else {
       printf("%s is an unknown command. Try again.", cmd);
     }

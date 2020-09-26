@@ -15,6 +15,15 @@ int strncmp(const char *str1, const char *str2, size_t num) {
   return 0;
 }
 
+void *memcpy (void *dest, const void *src, size_t len)
+{
+  char *d = dest;
+  const char *s = src;
+  while (len--)
+    *d++ = *s++;
+  return dest;
+}
+
 void *memset(void *b, int c, int len) {
   //int i;
   unsigned char *p = b;

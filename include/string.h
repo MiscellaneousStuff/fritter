@@ -9,5 +9,6 @@ size_t strlen(const char *s);
 void reverse(char *s);
 void itoa(int n, char *s, int radix);
 int strncmp(const char *str1, const char *str2, size_t num);
+void *memcpy (void *dest, const void *src, size_t len);
 
 #endif
