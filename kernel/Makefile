@@ -5,7 +5,8 @@ CFLAGS = -O2 -Wall -Wextra --freestanding -I../include -c
 LD = i686-elf-ld
 LDFLAGS = -r -T ../misc/linker.ld
 
-OBJS = asm.o gdt.o idt.o keyboard.o printf.o rtc.o serial.o timer.o tty.o
+OBJS = 	asm.o gdt.o idt.o keyboard.o mouse.o printf.o rtc.o serial.o \
+				timer.o tty.o
 
 all: kernel.o
 

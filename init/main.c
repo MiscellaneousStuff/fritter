@@ -5,7 +5,10 @@
 
 #include "gdt.h"
 #include "idt.h"
+
 #include "keyboard.h"
+#include "mouse.h"
+
 #include "timer.h"
 #include "rtc.h"
 
@@ -52,8 +55,9 @@ int kmain() {
   // Init timer at 100Hz
   init_timer(100);
 
-  // Init Keyboard Driver
+  // Init Keyboard and Mouse Drivers
   init_keyboard_driver();
+  init_mouse();
 
   // Print char from user
   char cmd[100];
@@ -77,6 +81,8 @@ int kmain() {
       printf(cmd+5);
     } else if (strncmp(cmd, "time", 4) == 0) {
       printf("%04d/%02d/%02d %02d:%02d:%02d", year, month, day, hour, minute, second);
+    } else if (strncmp(cmd, "mouse", 5) == 0) {
+      printf("mouse co-ords := X: %d Y: %d", mouse_x, mouse_y);
     } else {
       printf("%s is an unknown command. Try again.", cmd);
     }
