@@ -26,7 +26,7 @@ int kmain(multiboot_t *mb_info) {
   read_rtc();
 
   // Init screen
-  init_tty();
+  init_tty(80, 25);
 
   // Enable Interrupts
   asm volatile("sti");

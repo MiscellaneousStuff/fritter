@@ -8,8 +8,8 @@
 const unsigned char color = 0x07;
 uint16_t *tty_buf = (uint16_t *) 0xB8000;
 
-const int WIDTH = 80;
-const int HEIGHT = 25;
+int WIDTH = 80;
+int HEIGHT = 25;
 
 int x = 0;
 int y = 0;
@@ -33,7 +33,9 @@ void clrscr() {
   }
 }
 
-void init_tty() {
+void init_tty(int width, int height) {
+  WIDTH = width;
+  HEIGHT = height;
   discur();
   clrscr();
 }

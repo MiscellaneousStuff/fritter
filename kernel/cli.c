@@ -8,6 +8,8 @@
 #include "sys/keyboard.h"
 #include "sys/mouse.h"
 
+#include "gui.h"
+
 // ASCII 219 = block
 void gets(char *s) {
   size_t n = 0;
@@ -35,7 +37,7 @@ void init_cli() {
   printf("Welcome to fritter!\n");
 
   // Print char from user
-  char cmd[100];
+  char cmd[1024];
 
   // CMD loop
   for (;;) {

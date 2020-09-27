@@ -1,3 +1,4 @@
+#include <stdint.h>
 #include <stddef.h>
 #include <string.h>
 
@@ -27,6 +28,10 @@
 #define TASKBAR_PADDING 2
 #define TASKBAR_HEIGHT  (BUTTON_HEIGHT + (TASKBAR_PADDING * 2) + 2)
 
+const uint16_t cursor[17] = {
+
+};
+
 void init_gui() {
   // Background
   fillscr(COLOR_CYAN);
@@ -43,12 +48,12 @@ void init_gui() {
 
 void clear_terminal() {
   // Draw background
-  fillrect(5, WINDOW_TITLE_HEIGHT + 5, framebuffer_width-10, framebuffer_height - WINDOW_TITLE_HEIGHT - TASKBAR_HEIGHT - 10, COLOR_BLACK);
+  fillrect(5+5, 5+WINDOW_TITLE_HEIGHT + 5, 80*8, 25*8, COLOR_BLACK);
 }
 
 void draw_terminal_char(char c, unsigned int x, unsigned int y) {
-  int x_base = 5;
-  int y_base = WINDOW_TITLE_HEIGHT + 5;
+  int x_base = 5 + 5;
+  int y_base = WINDOW_TITLE_HEIGHT + 5 + 5;
   int x_val = x_base + x*8;
   int y_val = y_base + y*8;
   if (c == '\b') {
@@ -60,7 +65,7 @@ void draw_terminal_char(char c, unsigned int x, unsigned int y) {
 
 void draw_terminal() {
   // Draw window
-  draw_window(0, 0, framebuffer_width, framebuffer_height-TASKBAR_HEIGHT, "Terminal");
+  draw_window(5, 5, (80*8) + 10, (WINDOW_TITLE_HEIGHT+10) + (25*8), "Terminal");
 
   // Draw Background
   clear_terminal();
