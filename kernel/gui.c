@@ -82,6 +82,9 @@ void draw_alert(const char *title, const char *msg) {
   // Draw window first
   draw_window(window_x, window_y, ALERT_WIDTH, ALERT_HEIGHT, "Hello, World!");
 
+  // Draw message
+  draw_label(window_x + 10, window_y + 10 + WINDOW_TITLE_HEIGHT, msg, COLOR_BLACK);
+  
   // Then draw buttons on top
   draw_button(left_button_x, button_y, BUTTON_WIDTH, BUTTON_HEIGHT, "OK");
   draw_button(right_button_x, button_y, BUTTON_WIDTH, BUTTON_HEIGHT, "Cancel");
