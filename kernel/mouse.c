@@ -3,7 +3,7 @@
 #include <fritter/kernel.h>
 
 #include <asm/io.h>
-#include "idt.h"
+#include "sys/idt.h"
 
 uint8_t mouse_cycle = 0;
 int8_t mouse_byte[3];

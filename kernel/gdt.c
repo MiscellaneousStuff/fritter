@@ -1,6 +1,6 @@
 #include <stdint.h>
 
-#include "gdt.h"
+#include "sys/gdt.h"
 
 extern void gdt_flush(uint32_t);
 static void gdt_set_gate (int32_t, uint32_t, uint32_t, uint8_t, uint8_t);

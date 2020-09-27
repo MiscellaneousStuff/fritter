@@ -4,7 +4,7 @@
 #include <asm/io.h>
 #include <fritter/kernel.h>
 
-#include "idt.h"
+#include "sys/idt.h"
 
 extern void idt_flush(uint32_t);
 

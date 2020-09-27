@@ -4,16 +4,16 @@
 #include <fritter/kernel.h>
 
 #include "multiboot.h"
-#include "vesa.h"
+#include "sys/vesa.h"
 #include "gui.h"
 
-#include "gdt.h"
-#include "idt.h"
+#include "sys/gdt.h"
+#include "sys/idt.h"
 
-#include "timer.h"
+#include "sys/timer.h"
  
-#include "keyboard.h"
-#include "mouse.h"
+#include "sys/keyboard.h"
+#include "sys/mouse.h"
 
 #include "cli.h"
 

@@ -1,7 +1,7 @@
 #include <stddef.h>
 
 #include "gui.h"
-#include "vesa.h"
+#include "sys/vesa.h"
 
 #define COLOR_WHITE     0xFFFFFF
 #define COLOR_BLACK     0x000000

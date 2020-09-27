@@ -2,10 +2,10 @@
 
 #include <fritter/kernel.h>
 
-#include "rtc.h"
+#include "sys/rtc.h"
 
-#include "keyboard.h"
-#include "mouse.h"
+#include "sys/keyboard.h"
+#include "sys/mouse.h"
 
 // ASCII 219 = block
 void gets(char *s) {
@@ -32,7 +32,7 @@ void gets(char *s) {
 void init_cli() {
   // Welcome message
   printf("Welcome to fritter!\n");
-  
+
   // Print char from user
   char cmd[100];
 

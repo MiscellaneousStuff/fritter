@@ -3,8 +3,8 @@
 #include <asm/io.h>
 #include <fritter/kernel.h>
 
-#include "timer.h"
-#include "idt.h"
+#include "sys/timer.h"
+#include "sys/idt.h"
 
 uint32_t tick = 0;
 

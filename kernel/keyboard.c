@@ -1,4 +1,4 @@
-#include "keyboard.h"
+#include "sys/keyboard.h"
 
 keymap_t us = {
   //normal keys
