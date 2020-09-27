@@ -69,3 +69,13 @@ void fillrect(uint32_t x, uint32_t y, uint32_t width, uint32_t height, uint32_t 
     where += (width * bytes_per_pixel);
   }
 }
+
+void hollowrect(uint32_t x, uint32_t y, uint32_t width, uint32_t height, uint32_t color) {
+  // Left then right
+  verline(x, y, height, color);
+  verline(x+width-1, y, height, color);
+
+  // Top then bottom
+  horline(x, y, width, color);
+  horline(x, y+height-1, width, color);
+}

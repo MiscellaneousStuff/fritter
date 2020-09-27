@@ -56,8 +56,8 @@ int kmain(multiboot_t *mb_info) {
   // Enable Interrupts
   asm volatile("sti");
 
-  // Init timer at 100Hz
-  init_timer(100);
+  // 60 FPS
+  init_timer(60);
 
   // Init Keyboard and Mouse Drivers
   init_keyboard_driver();
