@@ -46,6 +46,13 @@ void printf(const char *s, ...) {
       case 'c':
         putc(va_arg(arg, int));
         break;
+      case 'b':
+        itoa(va_arg(arg, int), buf, 2);
+        paddingTotal = padding - strlen(buf);
+        for (int i=0; i<paddingTotal; i++)
+          putc('0');
+        printf(buf);
+        break;
     }
     s++;
   }

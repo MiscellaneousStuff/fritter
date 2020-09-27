@@ -43,7 +43,7 @@ int kmain(multiboot_t *mb_info) {
   init_gui();
 
   // Init CLI
-  init_cli();
+  // init_cli();
 
   // Wait for timing events
   for (;;) {

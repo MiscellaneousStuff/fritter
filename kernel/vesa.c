@@ -1,8 +1,11 @@
 #include <stdint.h>
 #include <string.h>
 
+#include <fritter/kernel.h>
+
 #include "multiboot.h"
 #include "sys/vesa.h"
+#include "font.h"
 
 uint64_t framebuffer_addr;
 uint32_t framebuffer_pitch;
@@ -34,6 +37,29 @@ void init_vesa(multiboot_t *mb_info) {
   bytes_per_pixel = bpp / 8;
 }
 
+void draw_string(uint32_t x, uint32_t y, const char *s, uint32_t color) {
+  for (int i=0; *s != '\0'; s++, i++)
+    draw_char(x + i*8, y, *s, color);
+}
+
+void draw_char(uint32_t x, uint32_t y, unsigned char c, uint32_t color) {
+  uint8_t data;
+  for (size_t row=0; row<8; row++) {
+    data = (uint8_t) *(font + c*8 + row);
+    for (size_t cell=0; cell<8; cell++) {
+      if (data & (0x80 >> cell)) {
+        putpixel(x + cell, y + row, color);
+      }
+    }
+  }
+
+  /*
+  for (size_t i=0; i<8; i++)
+    printf("%c 0b%08b\n", c, (uint8_t) *(font + c*8 + i));
+  fillrect(x, y, 8, 8, color);
+  */
+}
+
 void putpixel(uint32_t x, uint32_t y, uint32_t color) {
   unsigned int where = x * bytes_per_pixel + y * (width * bytes_per_pixel);
   unsigned char *screen = (unsigned char *) framebuffer_addr;
@@ -57,7 +83,7 @@ void fillscr(uint32_t color) {
 }
 
 void fillrect(uint32_t x, uint32_t y, uint32_t width, uint32_t height, uint32_t color) {
-  unsigned char *where; // = framebuffer_addr + x * bytes_per_pixel + y * (width * bytes_per_pixel);
+  unsigned char *where;
   uint32_t i, j;
   for (i=0; i < height; i++) {
     where = (unsigned char *) framebuffer_addr + ((y+i)*pitch+x*bytes_per_pixel);

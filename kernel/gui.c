@@ -1,6 +1,7 @@
 #include <stddef.h>
 
 #include "gui.h"
+#include "cli.h"
 #include "sys/vesa.h"
 
 #define COLOR_WHITE     0xFFFFFF
@@ -27,6 +28,10 @@
 void init_gui();
 void draw_taskbar();
 void draw_button();
+void draw_inverted_button(uint32_t x, uint32_t y, uint32_t width, uint32_t height);
+void draw_alert(const char *title, const char *msg);
+void draw_window(uint32_t x, uint32_t y, uint32_t width, uint32_t height, const char *title);
+void draw_label(uint32_t x, uint32_t y, const char *text, uint32_t color);
 
 void init_gui() {
   // Background
@@ -36,10 +41,10 @@ void init_gui() {
   draw_taskbar();
 
   // Example Window
-  draw_alert();
+  draw_alert("Example Alert", "Serious stuff has happened...");
 }
 
-void draw_alert(char *title, char *msg) {
+void draw_alert(const char *title, const char *msg) {
   uint32_t window_x = (framebuffer_width - ALERT_WIDTH) / 2;
   uint32_t window_y = (framebuffer_height - ALERT_HEIGHT) / 2;
 
@@ -48,14 +53,18 @@ void draw_alert(char *title, char *msg) {
   uint32_t button_y = (window_y + ALERT_HEIGHT) - BUTTON_HEIGHT - 6;
 
   // Draw window first
-  draw_window(window_x, window_y, ALERT_WIDTH, ALERT_HEIGHT, "Example Window");
+  draw_window(window_x, window_y, ALERT_WIDTH, ALERT_HEIGHT, "Hello, World!");
 
   // Then draw buttons on top
   draw_button(left_button_x, button_y, BUTTON_WIDTH, BUTTON_HEIGHT);
   draw_button(right_button_x, button_y, BUTTON_WIDTH, BUTTON_HEIGHT);
 }
 
-void draw_window(uint32_t x, uint32_t y, uint32_t width, uint32_t height, char *title) {
+void draw_label(uint32_t x, uint32_t y, const char *text, uint32_t color) {
+  draw_string(x, y, text, color);
+}
+
+void draw_window(uint32_t x, uint32_t y, uint32_t width, uint32_t height, const char *title) {
   // Draw background
   fillrect(x, y, width, height, BG_COLOR);
 
@@ -66,8 +75,9 @@ void draw_window(uint32_t x, uint32_t y, uint32_t width, uint32_t height, char *
   horline(x, y+height-1, width, COLOR_BLACK); // Bottom-most border
   horline(x+1, y+height-2, width-2, DARK_INSERT); // Inner bottom border
 
-  // Draw titlebar background
+  // Draw titlebar background and text
   fillrect(x+3, y+3, width-6, WINDOW_TITLE_HEIGHT, COLOR_BLUE);
+  draw_label(x+9, y+9, title, COLOR_WHITE);
 }
 
 void draw_taskbar() {
@@ -97,8 +107,8 @@ void draw_button(uint32_t x, uint32_t y, uint32_t width, uint32_t height) {
   horline(x+1, y+1, width-3, LIGHT_INSERT);
 
   // Draw bottom and inner bottom
-  horline(x, y+height, width, COLOR_BLACK);
-  horline(x+1, y+height-1, width-2, DARK_INSERT);
+  horline(x, y+height-1, width, COLOR_BLACK);
+  horline(x+1, y+height-2, width-2, DARK_INSERT);
 
   // Draw right and inner right
   verline(x+width-1, y, height, COLOR_BLACK);
