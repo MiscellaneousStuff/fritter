@@ -1,6 +1,8 @@
 #ifndef __MULTIBOOT_H__
 #define __MULTIBOOT_H__
 
+#include <stdint.h>
+
 #define MULTIBOOT_FLAG_MEM     0x001
 #define MULTIBOOT_FLAG_DEVICE  0x002
 #define MULTIBOOT_FLAG_CMDLINE 0x004
@@ -40,6 +42,10 @@ typedef struct
   uint16_t vbe_interface_off;
   uint16_t vbe_interface_len;
   uint64_t framebuffer_addr;
+  uint32_t framebuffer_pitch;
+  uint32_t framebuffer_width;
+  uint32_t framebuffer_height;
+  uint8_t framebuffer_bpp;
 } __attribute__((packed)) multiboot_t;
 
 typedef struct

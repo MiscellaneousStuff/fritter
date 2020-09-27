@@ -5,6 +5,7 @@
 
 #include "multiboot.h"
 #include "vesa.h"
+#include "gui.h"
 
 #include "gdt.h"
 #include "idt.h"
@@ -17,7 +18,7 @@
 
 // 219 = block
 
-void *gets(char *s) {
+void gets(char *s) {
   size_t n = 0;
   for (;;) {
     char c = keyboard_getchar();
@@ -63,7 +64,8 @@ int kmain(multiboot_t *mb_info) {
   init_mouse();
 
   // Init Graphics
-  init_vesa();
+  init_vesa(mb_info);
+  init_gui();
 
   // Print char from user
   char cmd[100];
@@ -90,12 +92,6 @@ int kmain(multiboot_t *mb_info) {
     } else if (strncmp(cmd, "mouse", 5) == 0) {
       printf("mouse co-ords := X: %d Y: %d", mouse_x, mouse_y);
     } else if (strncmp(cmd, "vbe", 3) == 0) {
-      vbe_info_t *info = (vbe_info_t *) mb_info->vbe_mode_info;
-
-      memset(mb_info->framebuffer_addr, 0xAAAAAAAA, 640*480*4);
-
-      printf("VBE Version:\t\t%d\n", (info->version & 0xFF00));
-
       printf("Bootloader:\t\t%s\n", mb_info->boot_loader_name);
       printf("VBE Mode:\t\t%d\n", mb_info->vbe_mode);
       printf("MEM Upper\t\t0x%x\n", mb_info->mem_upper);

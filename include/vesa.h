@@ -1,6 +1,20 @@
 #ifndef __VESA_H__
 #define __VESA_H__
 
-void init_vesa();
+#include "multiboot.h"
+
+uint64_t framebuffer_addr;
+uint32_t framebuffer_pitch;
+uint32_t framebuffer_width;
+uint32_t framebuffer_height;
+uint8_t framebuffer_bpp;
+
+void init_vesa(multiboot_t* mb_info);
+
+void putpixel(uint32_t x, uint32_t y, uint32_t color);
+void horline(uint32_t x, uint32_t y, uint32_t width, uint32_t color);
+void verline(uint32_t x, uint32_t y, uint32_t height, uint32_t color);
+void fillscr(uint32_t color);
+void fillrect(uint32_t x, uint32_t y, uint32_t width, uint32_t height, uint32_t color);
 
 #endif
