@@ -3,6 +3,7 @@
 #include <stdint.h>
 #include <asm/io.h>
 #include <fritter/kernel.h>
+#include "gui.h"
 
 const unsigned char color = 0x07;
 uint16_t *tty_buf = (uint16_t *) 0xB8000;
@@ -84,9 +85,11 @@ void putchar(char c) {
     case '\b':
       deccur();
       print_char(' ', x, y, color);
+      draw_terminal_char('\b', x, y);
       break;
     default:
       print_char(c, x, y, color);
+      draw_terminal_char(c, x, y);
       inccur();
       break;
   }

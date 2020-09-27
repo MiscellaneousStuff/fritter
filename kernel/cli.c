@@ -55,6 +55,7 @@ void init_cli() {
       printf("time\t Displays current date and time (Non-DST aware)");
     } else if (strncmp(cmd, "clear", strlen(cmd)) == 0) {
       clrscr();
+      clear_terminal();
     } else if (strncmp(cmd, "echo ", 5) == 0) {
       printf(cmd+5);
     } else if (strncmp(cmd, "time", 4) == 0) {

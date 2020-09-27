@@ -1,5 +1,7 @@
 #include <stddef.h>
+#include <string.h>
 
+#include "sys/rtc.h"
 #include "gui.h"
 #include "cli.h"
 #include "sys/vesa.h"
@@ -25,14 +27,6 @@
 #define TASKBAR_PADDING 2
 #define TASKBAR_HEIGHT  (BUTTON_HEIGHT + (TASKBAR_PADDING * 2) + 2)
 
-void init_gui();
-void draw_taskbar();
-void draw_button();
-void draw_inverted_button(uint32_t x, uint32_t y, uint32_t width, uint32_t height);
-void draw_alert(const char *title, const char *msg);
-void draw_window(uint32_t x, uint32_t y, uint32_t width, uint32_t height, const char *title);
-void draw_label(uint32_t x, uint32_t y, const char *text, uint32_t color);
-
 void init_gui() {
   // Background
   fillscr(COLOR_CYAN);
@@ -42,6 +36,34 @@ void init_gui() {
 
   // Example Window
   draw_alert("Example Alert", "Serious stuff has happened...");
+
+  // Terminal top-most
+  draw_terminal();
+}
+
+void clear_terminal() {
+  // Draw background
+  fillrect(5, WINDOW_TITLE_HEIGHT + 5, framebuffer_width-10, framebuffer_height - WINDOW_TITLE_HEIGHT - TASKBAR_HEIGHT - 10, COLOR_BLACK);
+}
+
+void draw_terminal_char(char c, unsigned int x, unsigned int y) {
+  int x_base = 5;
+  int y_base = WINDOW_TITLE_HEIGHT + 5;
+  int x_val = x_base + x*8;
+  int y_val = y_base + y*8;
+  if (c == '\b') {
+    fillrect(x_val, y_val, 8, 8, COLOR_BLACK);
+  } else {
+    draw_char(x_val, y_val, c, COLOR_WHITE);
+  }
+}
+
+void draw_terminal() {
+  // Draw window
+  draw_window(0, 0, framebuffer_width, framebuffer_height-TASKBAR_HEIGHT, "Terminal");
+
+  // Draw Background
+  clear_terminal();
 }
 
 void draw_alert(const char *title, const char *msg) {
@@ -56,8 +78,8 @@ void draw_alert(const char *title, const char *msg) {
   draw_window(window_x, window_y, ALERT_WIDTH, ALERT_HEIGHT, "Hello, World!");
 
   // Then draw buttons on top
-  draw_button(left_button_x, button_y, BUTTON_WIDTH, BUTTON_HEIGHT);
-  draw_button(right_button_x, button_y, BUTTON_WIDTH, BUTTON_HEIGHT);
+  draw_button(left_button_x, button_y, BUTTON_WIDTH, BUTTON_HEIGHT, "OK");
+  draw_button(right_button_x, button_y, BUTTON_WIDTH, BUTTON_HEIGHT, "Cancel");
 }
 
 void draw_label(uint32_t x, uint32_t y, const char *text, uint32_t color) {
@@ -88,13 +110,15 @@ void draw_taskbar() {
   horline(0, framebuffer_height-TASKBAR_HEIGHT, framebuffer_width, COLOR_WHITE);
 
   // Draw Start Button
-  draw_button(2, framebuffer_height - (BUTTON_HEIGHT + TASKBAR_PADDING), BUTTON_WIDTH, BUTTON_HEIGHT);
+  draw_button(2, framebuffer_height - (BUTTON_HEIGHT + TASKBAR_PADDING), BUTTON_WIDTH, BUTTON_HEIGHT, "start");
 
   // Draw Time Button
-  draw_inverted_button(framebuffer_width - BUTTON_WIDTH - 2, framebuffer_height - BUTTON_HEIGHT - 2, BUTTON_WIDTH, BUTTON_HEIGHT);
+  char buf[100];
+  itoa(year, buf, 10);
+  draw_inverted_button(framebuffer_width - BUTTON_WIDTH - 2, framebuffer_height - BUTTON_HEIGHT - 2, BUTTON_WIDTH, BUTTON_HEIGHT, buf);
 }
 
-void draw_button(uint32_t x, uint32_t y, uint32_t width, uint32_t height) {
+void draw_button(uint32_t x, uint32_t y, uint32_t width, uint32_t height, const char *text) {
   // Background
   fillrect(x, y, width, height, BG_COLOR);
 
@@ -113,11 +137,28 @@ void draw_button(uint32_t x, uint32_t y, uint32_t width, uint32_t height) {
   // Draw right and inner right
   verline(x+width-1, y, height, COLOR_BLACK);
   verline(x+width-2, y+1, height-2, DARK_INSERT);
+
+  // If text isn't empty, render it in the center of the button
+  size_t label_len = strlen(text);
+  if (label_len > 0) {
+    int label_x = x + (((x + width) - x) / 2) - ((label_len/2) * 8);
+    int label_y = y + (((y + height) - y) / 2) - 4;
+    draw_label(label_x, label_y, text, COLOR_BLACK);
+  }
 }
 
-void draw_inverted_button(uint32_t x, uint32_t y, uint32_t width, uint32_t height) {
+void draw_inverted_button(uint32_t x, uint32_t y, uint32_t width, uint32_t height, const char *text) {
+  // Draw Border
   horline(x, y, width, DARK_INSERT);
   verline(x, y, height, DARK_INSERT);
   verline(x+width-1, y, height, COLOR_WHITE);
   horline(x, y+height-1, width, COLOR_WHITE);
+
+  // If text isn't empty, render it in the center of the button
+  size_t label_len = strlen(text);
+  if (label_len > 0) {
+    int label_x = x + (((x + width) - x) / 2) - ((label_len/2) * 8);
+    int label_y = y + (((y + height) - y) / 2) - 4;
+    draw_label(label_x, label_y, text, COLOR_BLACK);
+  }
 }
