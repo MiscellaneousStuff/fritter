@@ -28,8 +28,40 @@
 #define TASKBAR_PADDING 2
 #define TASKBAR_HEIGHT  (BUTTON_HEIGHT + (TASKBAR_PADDING * 2) + 2)
 
-const uint16_t cursor[17] = {
+int cursor_x = 0;
+int cursor_y = 0;
 
+// Black, White, Transparent, End of Line
+// 11, 00, 01, 10
+
+const uint8_t cursor[55] = {
+  0b11100000,
+  0b11111000,
+  0b11001110, // 3
+  
+  0b11000011, 0b10000000,
+  0b11000000, 0b11100000,
+  0b11000000, 0b00111000, // 6 += 9
+  
+  0b11000000, 0b00001110,
+  0b11000000, 0b00000011, 0b10000000,
+  0b11000000, 0b00000000, 0b11100000, // 8 += 17
+
+  0b11000000, 0b00000000, 0b00111000,
+  0b11000000, 0b00000000, 0b00001110,
+  0b11000000, 0b00000000, 0b00000011, 0b10000000, // 10 += 27
+
+  0b11000000, 0b00000011, 0b11111111, 0b10000000,
+  0b11000000, 0b11000011, 0b10000000,
+  0b11000011, 0b01110000, 0b11100000, // 10 += 37
+
+  0b11001101, 0b01110000, 0b11100000,
+  0b11110101, 0b01011100, 0b00111000,
+  0b11110101, 0b01011100, 0b00111000, // 9 += 46
+
+  0b01010101, 0b01010111, 0b00001110, // 9 += 55
+  0b01010101, 0b01010111, 0b00001110,
+  0b01010101, 0b01010101, 0b11111000
 };
 
 void init_gui() {
@@ -44,6 +76,50 @@ void init_gui() {
 
   // Terminal top-most
   draw_terminal();
+
+  // Render cursor top most
+  draw_cursor(200, WINDOW_TITLE_HEIGHT-13);
+}
+
+/*
+uint8_t data;
+for (size_t row=0; row<8; row++) {
+  data = (uint8_t) *(font + c*8 + row);
+  for (size_t cell=0; cell<8; cell++) {
+    if (data & (0x80 >> cell)) {
+      putpixel(x + cell, y + row, color);
+    }
+  }
+}
+*/
+void draw_cursor(uint32_t x, uint32_t y) {
+  int len = sizeof(cursor);
+  int x_offset = 0;
+  int y_offset = 0;
+  printf("len: %d, x_offset: %d, y_offset: %d\n", len, x_offset, y_offset);
+  uint8_t cursor_byte;
+  for (int i=0; i<len; i++) {
+    cursor_byte = (uint8_t) *(cursor + i);
+    printf("cursor byte: %08b\n", (uint8_t) cursor_byte);
+    for (int j=0; j<4; j++) {
+      // 0b11000000
+      uint8_t current_pixel = ((cursor_byte & (0xC0 >> j*2)) >> ((3-j)*2));
+      printf("current pixel: %08b\n", (uint8_t) current_pixel);
+      if (current_pixel == 0b11) { // Black
+        putpixel(x + x_offset, y + y_offset, COLOR_BLACK);
+        x_offset++;
+      } else if (current_pixel == 0b00) { // White
+        putpixel(x + x_offset, y + y_offset, COLOR_WHITE);
+        x_offset++;
+      } else if (current_pixel == 0b10) { // End of Line
+        x_offset = 0;
+        y_offset++;
+        break;
+      } else if (current_pixel == 0b01) { // Transparent
+        x_offset++;
+      }
+    }
+  }
 }
 
 void clear_terminal() {
