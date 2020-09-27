@@ -43,8 +43,7 @@ void putpixel(uint32_t x, uint32_t y, uint32_t color) {
 };
 
 void horline(uint32_t x, uint32_t y, uint32_t width, uint32_t color) {
-  int offset = (y*pitch+x);
-  memset((uint32_t *) addr + offset, color, width * bytes_per_pixel);
+  fillrect(x, y, width, 1, color);
 }
 
 void verline(uint32_t x, uint32_t y, uint32_t height, uint32_t color) {
@@ -58,9 +57,10 @@ void fillscr(uint32_t color) {
 }
 
 void fillrect(uint32_t x, uint32_t y, uint32_t width, uint32_t height, uint32_t color) {
-  unsigned char *where = framebuffer_addr;
-  int i, j;
+  unsigned char *where; // = framebuffer_addr + x * bytes_per_pixel + y * (width * bytes_per_pixel);
+  uint32_t i, j;
   for (i=0; i < height; i++) {
+    where = (unsigned char *) framebuffer_addr + ((y+i)*pitch+x*bytes_per_pixel);
     for (j=0; j < width; j++) {
       where[j * bytes_per_pixel] = color & 255;
       where[j * bytes_per_pixel + 1] = (color >> 8) & 255;
