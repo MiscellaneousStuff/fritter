@@ -45,4 +45,6 @@ void gui_handle_mouse();
 int cursor_x;
 int cursor_y;
 
+typedef enum { MOVING, LEFT_CLICK, RIGHT_CLICK, LEFT_DRAG, RIGHT_DRAG } mouse_event_t;
+
 #endif

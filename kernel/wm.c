@@ -88,7 +88,7 @@ void render_window(wm_window_t *window) {
   );
 }
 
-bool overlaps(uint32_t source, uint32_t target_start, uint32_t target_end) {
+inline bool overlaps(uint32_t source, uint32_t target_start, uint32_t target_end) {
   if (source >= target_start && source <= target_end) {
     return true;
   } else {
@@ -96,15 +96,26 @@ bool overlaps(uint32_t source, uint32_t target_start, uint32_t target_end) {
   }
 }
 
-void wm_handle_mouse() {
+void wm_handle_mouse(mouse_event_t mouse_event) {
   wm_window_t *window;
   for (size_t i=0; i<MAX_WINDOW_COUNT; i++) {
     window = windows[i];
     if (window) {
       bool x_overlap = overlaps(cursor_x, window->x, window->x + window->width);
       bool y_overlap = overlaps(cursor_y, window->y, window->y + window->height);
-      if (x_overlap && y_overlap && (mouse_byte[0] & 0x01)) {
-        draw_alert("Title", window->title);
+      bool overlap = x_overlap && y_overlap;
+      if (overlap && mouse_event == LEFT_CLICK) {
+        switch (mouse_event) {
+          case LEFT_CLICK:
+            draw_alert(window->title, "Left Click");
+            break;
+          case RIGHT_CLICK:
+            draw_alert(window->title, "Right Click");
+            break;
+          case LEFT_DRAG:
+            // Move window here
+            break;
+        }
       }
     }
   }

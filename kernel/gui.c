@@ -68,8 +68,24 @@ void render_cursor() {
 }
 
 void gui_handle_mouse() {
-  // Handle left and right click here
-  // printf("MB1: %d, MB2: %d\n", mouse_byte[0] & 0b01, mouse_byte[0] & 0b10);
+  mouse_event_t mouse_event;
+
+  // Set mouse state here
+  if (mouse_byte[0] & 0x01) { // Left Button
+    if (mouse_x != 0 || mouse_y != 0) { // Left Drag?
+      mouse_event = LEFT_DRAG;
+    } else {
+      mouse_event = LEFT_CLICK;
+    }
+  } else if (mouse_byte[0] & 0x02) { // Right Button
+    if (mouse_x != 0 || mouse_y != 0) { // Right Drag?
+      mouse_event = RIGHT_DRAG;
+    } else {
+      mouse_event = RIGHT_CLICK;
+    }
+  } else {
+    mouse_event = MOVING;
+  }
 
   // Clear underneath mouse first
   pasterect(cursor_x, cursor_y, CURSOR_WIDTH, CURSOR_HEIGHT, cursor_sprite_buf);
@@ -90,7 +106,7 @@ void gui_handle_mouse() {
   render_cursor();
 
   // Call Window Manager Mouse Handler
-  wm_handle_mouse();
+  wm_handle_mouse(mouse_event);
 }
 
 void draw_cursor(uint32_t x, uint32_t y) {
