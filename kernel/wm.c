@@ -205,17 +205,6 @@ void render_window(wm_window_t *window) {
     window->focused
   );
 
-  /*
-  // Close button
-  draw_button(
-    window->x + window->width - CLOSE_BUTTON_SIZE - WINDOW_BORDER - 2,
-    window->y + WINDOW_BORDER + 2,
-    CLOSE_BUTTON_SIZE,
-    CLOSE_BUTTON_SIZE,
-    "X"
-  );
-  */
-
   // Then find and draw it's components
   wm_component_t *component;
   for (size_t i=0; i<MAX_COMPONENT_COUNT; i++) {
@@ -249,14 +238,6 @@ void render_window(wm_window_t *window) {
   }
 }
 
-inline bool overlaps(uint32_t source, uint32_t target_start, uint32_t target_end) {
-  if (source >= target_start && source <= target_end) {
-    return true;
-  } else {
-    return false;
-  }
-}
-
 void wm_handle_mouse(mouse_event_t mouse_event) {
   bool window_focus_change = false;
   
@@ -271,7 +252,7 @@ void wm_handle_mouse(mouse_event_t mouse_event) {
       bool overlap = x_overlap && y_overlap;
       if (overlap) {
         switch (mouse_event) {
-          case LEFT_CLICK:
+          case LEFT_DOWN:
             // Update window focus
             window->focused = true;
             window_focus_change = true;
@@ -301,9 +282,9 @@ void wm_handle_mouse(mouse_event_t mouse_event) {
                   );
                   */
                   if (overlap) {
-                    if (component->click_handler != NULL) {
-                      //printf("COMPONENT CLICK HANDLER: %x\n", component->click_handler);
-                      void (*handler)(wm_window_t *) = (component->click_handler);
+                    if (component->left_down_handler != NULL) {
+                      //printf("COMPONENT CLICK HANDLER: %x\n", component->left_down_handler);
+                      void (*handler)(wm_window_t *) = (component->left_down_handler);
                       handler(window);
                     }
                  }
@@ -314,7 +295,7 @@ void wm_handle_mouse(mouse_event_t mouse_event) {
             // Re-render all windows
             render_windows();
             break;
-          case RIGHT_CLICK:
+          case RIGHT_DOWN:
             // draw_alert(window->title, "Right Click");
             break;
           case LEFT_DRAG:

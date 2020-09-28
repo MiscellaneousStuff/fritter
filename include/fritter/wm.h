@@ -26,7 +26,7 @@ typedef struct {
   uint32_t width;
   uint32_t height;
   void *component_data;
-  void *click_handler;
+  void *left_down_handler;
 } wm_component_t;
 
 typedef struct {

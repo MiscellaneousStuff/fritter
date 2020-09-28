@@ -66,7 +66,8 @@ void render_cursor() {
   draw_cursor(cursor_x, cursor_y);
 }
 
-void gui_handle_mouse() {
+void gui_handle_mouse(mouse_event_t mouse_event) {
+  /*
   mouse_event_t mouse_event;
 
   // Set mouse state here
@@ -85,7 +86,8 @@ void gui_handle_mouse() {
   } else {
     mouse_event = MOVING;
   }
-
+  */
+ 
   // Clear underneath mouse first
   pasterect(cursor_x, cursor_y, CURSOR_WIDTH, CURSOR_HEIGHT, cursor_sprite_buf);
 
@@ -304,5 +306,13 @@ void draw_inverted_button(uint32_t x, uint32_t y, uint32_t width, uint32_t heigh
     int label_x = x + (((x + width) - x) / 2) - ((label_len/2) * 8);
     int label_y = y + (((y + height) - y) / 2) - 4;
     draw_label(label_x, label_y, text, COLOR_BLACK);
+  }
+}
+
+bool overlaps(uint32_t source, uint32_t target_start, uint32_t target_end) {
+  if (source >= target_start && source <= target_end) {
+    return true;
+  } else {
+    return false;
   }
 }

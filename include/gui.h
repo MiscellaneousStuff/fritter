@@ -29,7 +29,7 @@
 #define TASKBAR_PADDING 2
 #define TASKBAR_HEIGHT  (BUTTON_HEIGHT + (TASKBAR_PADDING * 2) + 2)
 
-#define CURSOR_SENSITIVITY      0.25
+#define CURSOR_SENSITIVITY      0.5
 #define CURSOR_WIDTH            12
 #define CURSOR_HEIGHT           21
 #define CURSOR_BYTES_PER_PIXEL  4 // NOTE: This is needed until malloc() is implemented
@@ -49,10 +49,9 @@ void draw_window(uint32_t x, uint32_t y, uint32_t width, uint32_t height, const 
 void draw_label(uint32_t x, uint32_t y, const char *text, uint32_t color);
 void draw_terminal();
 void gui_handle_mouse();
+bool overlaps(uint32_t source, uint32_t target_start, uint32_t target_end);
 
 int cursor_x;
 int cursor_y;
-
-typedef enum { MOVING, LEFT_CLICK, RIGHT_CLICK, LEFT_DRAG, RIGHT_DRAG } mouse_event_t;
 
 #endif

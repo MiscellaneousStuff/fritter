@@ -1,11 +1,16 @@
+#include <stdbool.h>
 #include <stdint.h>
 
 #include <fritter/kernel.h>
-
+#include <sys/mouse.h>
 #include <asm/io.h>
-#include "sys/idt.h"
+#include <sys/idt.h>
 
 #include "gui.h"
+
+// Mouse Button State
+bool prev_button_state[2];
+bool cur_button_state[2];
 
 uint8_t mouse_cycle = 0;
 int8_t mouse_byte[3];
@@ -17,6 +22,16 @@ void mouse_handler(registers_t *regs) {
   switch(mouse_cycle) {
     case 0:
       mouse_byte[0] = inb(0x60);
+      if (MOUSE_LEFT_BUTTON(mouse_byte[0])) {
+        cur_button_state[0] = true;
+      } else {
+        cur_button_state[0] = false;
+      }
+      if (MOUSE_RIGHT_BUTTON(mouse_byte[0])) {
+        cur_button_state[1] = true;
+      } else {
+        cur_button_state[1] = false;
+      }
       mouse_cycle++;
       break;
     case 1:
@@ -30,7 +45,19 @@ void mouse_handler(registers_t *regs) {
       mouse_cycle = 0;
       break;
   }
-  gui_handle_mouse();
+  if (mouse_cycle == 0) {
+    mouse_event_t mouse_event;
+    if (prev_button_state[0] == false, cur_button_state[0] == true) { // Left Button Down
+      mouse_event = LEFT_DOWN;
+    } else if (prev_button_state[0] == true, cur_button_state[0] == false) { // Left Button Up
+      mouse_event = LEFT_UP;
+    } else if (prev_button_state[1] == false, cur_button_state[1] == true) { // Right Button Down
+      mouse_event = RIGHT_DOWN;
+    } else if (prev_button_state[1] == true, cur_button_state[1] == false) { // Right Button Up
+      mouse_event = RIGHT_UP;
+    }
+    gui_handle_mouse(mouse_event);
+  }
 }
 
 void mouse_wait(uint8_t type) {
