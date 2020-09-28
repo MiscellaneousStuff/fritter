@@ -2,6 +2,7 @@
 #include <string.h>
 
 #include <fritter/kernel.h>
+#include <fritter/wm.h>
 
 #include "multiboot.h"
 #include "sys/vesa.h"

@@ -9,6 +9,7 @@
 #include "sys/mouse.h"
 
 #include "gui.h"
+#include <fritter/wm.h>
 
 // ASCII 219 = block
 void gets(char *s) {
@@ -64,6 +65,15 @@ void init_cli() {
       printf("%04d/%02d/%02d %02d:%02d:%02d", year, month, day, hour, minute, second);
     } else if (strncmp(cmd, "mouse", 5) == 0) {
       printf("mouse co-ords := X: %d Y: %d", mouse_x, mouse_y);
+    } else if (strncmp(cmd, "wm", 2) == 0) {
+      printf("Window Manager:\n");
+      printf("Window Count = %d\n", window_count);
+      wm_window_t *window;
+      for (size_t i=0; i<MAX_WINDOW_COUNT; i++) {
+        window = windows[i];
+        if (window)
+          printf("ID: %d, Title: %s, (X, Y): %d %d\n", window->id, window->title, window->x, window->y);
+      }
     } else {
       printf("%s is an unknown command. Try again.", cmd);
     }

@@ -1,5 +1,6 @@
 #define TAB_SIZE 8
 
+#include <stddef.h>
 #include <stdint.h>
 #include <asm/io.h>
 #include <fritter/kernel.h>
@@ -28,7 +29,7 @@ void discur() {
 // Clears the screen
 void clrscr() {
   rescur();
-  for (unsigned int i=0; i<(WIDTH * HEIGHT); i++) {
+  for (size_t i=0; i<((uint32_t) WIDTH * HEIGHT); i++) {
     tty_buf[i] = 0;
   }
 }

@@ -1,3 +1,5 @@
+#include <stdint.h>
+
 #include "sys/keyboard.h"
 
 keymap_t us = {
@@ -149,7 +151,7 @@ keymap_t gb = {
   // caps
   {
     /* first row - indices 0 to 14 */
-    0, 27, '!', '@', '£', '$', '%', '^', '&', '*', '(', ')', '_', '+', '\b',
+    0, 27, '!', '@', (uint8_t) '£', '$', '%', '^', '&', '*', '(', ')', '_', '+', '\b',
     
     /* second row - indices 15 to 28 */
     '\t', 'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', '{', '}', '\n', // Enter key

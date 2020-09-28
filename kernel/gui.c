@@ -37,8 +37,8 @@
 int cursor_x = 200;
 int cursor_y = 400;
 
+void render_gui();
 void draw_cursor();
-void gui_handle_mouse();
 unsigned char cursor_sprite_buf[CURSOR_WIDTH * CURSOR_HEIGHT * CURSOR_BYTES_PER_PIXEL]; // NOTE: 4 is bytes per pixel
 
 // Black, White, Transparent, End of Line
@@ -110,10 +110,10 @@ void gui_handle_mouse() {
   int delta_y = (-mouse_y) * CURSOR_SENSITIVITY; // NOTE: mouse_y is negative because mouse y delta is flipped
   int new_cursor_x = cursor_x + delta_x;
   int new_cursor_y = cursor_y + delta_y;
-  if (new_cursor_x < framebuffer_width && new_cursor_x > 0) {
+  if (new_cursor_x < (int) framebuffer_width && new_cursor_x > 0) {
     cursor_x = new_cursor_x;
   }
-  if (new_cursor_y < framebuffer_width && new_cursor_y > 0) {
+  if (new_cursor_y < (int) framebuffer_width && new_cursor_y > 0) {
     cursor_y = new_cursor_y;
   } 
 
@@ -186,7 +186,7 @@ void draw_alert(const char *title, const char *msg) {
   uint32_t button_y = (window_y + ALERT_HEIGHT) - BUTTON_HEIGHT - 6;
 
   // Draw window first
-  draw_window(window_x, window_y, ALERT_WIDTH, ALERT_HEIGHT, "Hello, World!");
+  draw_window(window_x, window_y, ALERT_WIDTH, ALERT_HEIGHT, title);
 
   // Draw message
   draw_label(window_x + 10, window_y + 10 + WINDOW_TITLE_HEIGHT, msg, COLOR_BLACK);
