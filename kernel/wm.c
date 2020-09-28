@@ -37,26 +37,26 @@ void btn_ok_handler(uint32_t window_id) {
   printf("OK HANDLER!\n");
 }
 
-void lbl_handler(uint32_t window_id) {
-  printf("LBL HANDLER!\n");
+void btn_cancel_handler(uint32_t window_id) {
+  printf("CANCEL HANDLER!\n");
 }
 
 inline void test_window() {
   // Window
   static wm_window_t alert_window = { 0, 10, 400, 200, 100, "Title", false, 0 };
 
-  // Button
-  static wm_button_t button_data = { "OK", false };
-  static wm_component_t button = { 0, 0, 20, 30, BUTTON, BUTTON_WIDTH, BUTTON_HEIGHT, &button_data, &btn_ok_handler };
+  // Button OK
+  static wm_button_t button_ok_data = { "OK", false };
+  static wm_component_t button_ok = { 0, 0, 0, 0, BUTTON, BUTTON_WIDTH, BUTTON_HEIGHT, &button_ok_data, &btn_ok_handler };
 
-  // Label
-  static wm_label_t label_data = { "Label" };
-  static wm_component_t label = { 0, 0, 20, 10, LABEL, 30, 8, &label_data, &lbl_handler };
+  // Button Cancel
+  static wm_button_t button_cancel_data = { "Cancel", false };
+  static wm_component_t button_cancel = { 0, 0, BUTTON_WIDTH+5, 0, BUTTON, BUTTON_WIDTH, BUTTON_HEIGHT, &button_cancel_data, &btn_cancel_handler };
 
   // Add Window and Components
   add_window(&alert_window);
-  add_component(&button);
-  add_component(&label);
+  add_component(&button_ok);
+  add_component(&button_cancel);
 }
 
 void add_component(wm_component_t *component) {
@@ -215,7 +215,7 @@ void wm_handle_mouse(mouse_event_t mouse_event) {
                 printf(
                   "Component Overlap: %d, %d, %d, %d, %d, %d, %d, %d, %d\n",
                   cursor_x-window->x,
-                  cursor_y-window->y,
+                  cursor_y-window->y-WINDOW_TITLE_HEIGHT,
                   x_overlap,
                   y_overlap,
                   component->x,
