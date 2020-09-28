@@ -19,5 +19,7 @@ void fillrect(uint32_t x, uint32_t y, uint32_t width, uint32_t height, uint32_t 
 void draw_char(uint32_t x, uint32_t y, unsigned char c, uint32_t color);
 void draw_string(uint32_t x, uint32_t y, const char *s, uint32_t color);
 void hollowrect(uint32_t x, uint32_t y, uint32_t width, uint32_t height, uint32_t color);
+void copyrect(uint32_t x, uint32_t y, uint32_t width, uint32_t height, unsigned char *buf);
+void pasterect(uint32_t x, uint32_t y, uint32_t width, uint32_t height, unsigned char *buf);
 
 #endif

@@ -52,12 +52,6 @@ void draw_char(uint32_t x, uint32_t y, unsigned char c, uint32_t color) {
       }
     }
   }
-
-  /*
-  for (size_t i=0; i<8; i++)
-    printf("%c 0b%08b\n", c, (uint8_t) *(font + c*8 + i));
-  fillrect(x, y, 8, 8, color);
-  */
 }
 
 void putpixel(uint32_t x, uint32_t y, uint32_t color) {
@@ -91,6 +85,34 @@ void fillrect(uint32_t x, uint32_t y, uint32_t width, uint32_t height, uint32_t 
       where[j * bytes_per_pixel] = color & 255;
       where[j * bytes_per_pixel + 1] = (color >> 8) & 255;
       where[j * bytes_per_pixel + 2] = (color >> 16) & 255; 
+    }
+    where += (width * bytes_per_pixel);
+  }
+}
+
+void copyrect(uint32_t x, uint32_t y, uint32_t width, uint32_t height, unsigned char *buf) {
+  unsigned char *where;
+  uint32_t i, j;
+  for (i=0; i < height; i++) {
+    where = (unsigned char *) framebuffer_addr + ((y+i)*pitch+x*bytes_per_pixel);
+    for (j=0; j < width; j++) {
+      *buf++ = where[j * bytes_per_pixel];
+      *buf++ = where[j * bytes_per_pixel + 1];
+      *buf++ = where[j * bytes_per_pixel + 2];
+    }
+    where += (width * bytes_per_pixel);
+  }
+}
+
+void pasterect(uint32_t x, uint32_t y, uint32_t width, uint32_t height, unsigned char *buf) {
+  unsigned char *where;
+  uint32_t i, j;
+  for (i=0; i < height; i++) {
+    where = (unsigned char *) framebuffer_addr + ((y+i)*pitch+x*bytes_per_pixel);
+    for (j=0; j < width; j++) {
+      where[j * bytes_per_pixel] = *buf++;
+      where[j * bytes_per_pixel + 1] = *buf++;
+      where[j * bytes_per_pixel + 2] = *buf++;
     }
     where += (width * bytes_per_pixel);
   }

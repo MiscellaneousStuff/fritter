@@ -29,10 +29,15 @@
 #define TASKBAR_PADDING 2
 #define TASKBAR_HEIGHT  (BUTTON_HEIGHT + (TASKBAR_PADDING * 2) + 2)
 
-#define MOUSE_SENSITIVITY 0.25
+#define CURSOR_SENSITIVITY      0.25
+#define CURSOR_WIDTH            12
+#define CURSOR_HEIGHT           21
+#define CURSOR_BYTES_PER_PIXEL  4 // NOTE: This is needed until malloc() is implemented
 
 int cursor_x = 200;
 int cursor_y = 400;
+
+unsigned char cursor_sprite_buf[CURSOR_WIDTH * CURSOR_HEIGHT * CURSOR_BYTES_PER_PIXEL]; // NOTE: 4 is bytes per pixel
 
 // Black, White, Transparent, End of Line
 // 11, 00, 01, 10
@@ -69,6 +74,7 @@ const uint8_t cursor[55] = {
 
 void init_gui() {
   render_gui();
+  copyrect(cursor_x, cursor_y, CURSOR_WIDTH, CURSOR_HEIGHT, cursor_sprite_buf);
 }
 
 void render_gui() {
@@ -90,21 +96,13 @@ void render_cursor() {
   draw_cursor(cursor_x, cursor_y);
 }
 
-/*
-uint8_t data;
-for (size_t row=0; row<8; row++) {
-  data = (uint8_t) *(font + c*8 + row);
-  for (size_t cell=0; cell<8; cell++) {
-    if (data & (0x80 >> cell)) {
-      putpixel(x + cell, y + row, color);
-    }
-  }
-}
-*/
-
 void gui_handle_mouse() {
-  int delta_x = mouse_x * MOUSE_SENSITIVITY;
-  int delta_y = (-mouse_y) * MOUSE_SENSITIVITY; // NOTE: mouse_y is negative because mouse y delta is flipped
+  // Clear underneath mouse first
+  pasterect(cursor_x, cursor_y, CURSOR_WIDTH, CURSOR_HEIGHT, cursor_sprite_buf);
+
+  // Calculate new mouse position
+  int delta_x = mouse_x * CURSOR_SENSITIVITY;
+  int delta_y = (-mouse_y) * CURSOR_SENSITIVITY; // NOTE: mouse_y is negative because mouse y delta is flipped
   int new_cursor_x = cursor_x + delta_x;
   int new_cursor_y = cursor_y + delta_y;
   if (new_cursor_x < framebuffer_width && new_cursor_x > 0) {
@@ -113,10 +111,16 @@ void gui_handle_mouse() {
   if (new_cursor_y < framebuffer_width && new_cursor_y > 0) {
     cursor_y = new_cursor_y;
   } 
+
+  // Render the cursor at its new position
   render_cursor();
 }
 
 void draw_cursor(uint32_t x, uint32_t y) {
+  // Save what was rendered underneath the cursor so we can replace it when we move the cursor again later
+  copyrect(x, y, CURSOR_WIDTH, CURSOR_HEIGHT, cursor_sprite_buf);
+
+  // Render the cursor
   int len = sizeof(cursor);
   int x_offset = 0;
   int y_offset = 0;
