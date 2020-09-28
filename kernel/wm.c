@@ -1,7 +1,9 @@
+#include <stdbool.h>
 #include <string.h>
 #include <sys/vesa.h>
 #include <fritter/wm.h>
 
+#include "sys/mouse.h"
 #include "gui.h"
 
 void render_window(wm_window_t *window);
@@ -84,4 +86,26 @@ void render_window(wm_window_t *window) {
     window->height,
     window->title
   );
+}
+
+bool overlaps(uint32_t source, uint32_t target_start, uint32_t target_end) {
+  if (source >= target_start && source <= target_end) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+void wm_handle_mouse() {
+  wm_window_t *window;
+  for (size_t i=0; i<MAX_WINDOW_COUNT; i++) {
+    window = windows[i];
+    if (window) {
+      bool x_overlap = overlaps(cursor_x, window->x, window->x + window->width);
+      bool y_overlap = overlaps(cursor_y, window->y, window->y + window->height);
+      if (x_overlap && y_overlap && (mouse_byte[0] & 0x01)) {
+        draw_alert("Title", window->title);
+      }
+    }
+  }
 }

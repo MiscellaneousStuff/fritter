@@ -2,6 +2,8 @@
 #include <stddef.h>
 #include <string.h>
 
+#include <fritter/wm.h>
+
 #include "sys/rtc.h"
 #include "gui.h"
 #include "cli.h"
@@ -49,7 +51,14 @@ const uint8_t cursor[55] = {
 };
 
 void init_gui() {
+  // Init cursor position
+  cursor_x = CURSOR_START_X;
+  cursor_y = CURSOR_START_Y;
+
+  // Copy underneath cursor
   copyrect(cursor_x, cursor_y, CURSOR_WIDTH, CURSOR_HEIGHT, cursor_sprite_buf);
+
+  // Render cursor
   render_cursor();
 }
 
@@ -75,10 +84,13 @@ void gui_handle_mouse() {
   }
   if (new_cursor_y < (int) framebuffer_width && new_cursor_y > 0) {
     cursor_y = new_cursor_y;
-  } 
+  }
 
   // Render the cursor at its new position
   render_cursor();
+
+  // Call Window Manager Mouse Handler
+  wm_handle_mouse();
 }
 
 void draw_cursor(uint32_t x, uint32_t y) {

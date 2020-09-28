@@ -42,5 +42,6 @@ size_t window_count;
 void init_wm();
 void add_window(wm_window_t *window);
 void render_windows();
+void wm_handle_mouse();
 
 #endif

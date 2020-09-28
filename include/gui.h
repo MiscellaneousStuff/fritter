@@ -27,6 +27,9 @@
 #define CURSOR_HEIGHT           21
 #define CURSOR_BYTES_PER_PIXEL  4 // NOTE: This is needed until malloc() is implemented
 
+#define CURSOR_START_X          100
+#define CURSOR_START_Y          100
+
 void init_gui();
 void draw_terminal_char(char c, unsigned int x, unsigned int y);
 void clear_terminal();
@@ -38,5 +41,8 @@ void draw_window(uint32_t x, uint32_t y, uint32_t width, uint32_t height, const 
 void draw_label(uint32_t x, uint32_t y, const char *text, uint32_t color);
 void draw_terminal();
 void gui_handle_mouse();
+
+int cursor_x;
+int cursor_y;
 
 #endif
