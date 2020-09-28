@@ -5,6 +5,8 @@
 #include <asm/io.h>
 #include "sys/idt.h"
 
+#include "gui.h"
+
 uint8_t mouse_cycle = 0;
 int8_t mouse_byte[3];
 int8_t mouse_x = 0;
@@ -28,6 +30,7 @@ void mouse_handler(registers_t *regs) {
       mouse_cycle = 0;
       break;
   }
+  gui_handle_mouse();
 }
 
 void mouse_wait(uint8_t type) {

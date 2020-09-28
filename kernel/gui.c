@@ -6,6 +6,7 @@
 #include "gui.h"
 #include "cli.h"
 #include "sys/vesa.h"
+#include "sys/mouse.h"
 
 #define COLOR_WHITE     0xFFFFFF
 #define COLOR_BLACK     0x000000
@@ -28,8 +29,10 @@
 #define TASKBAR_PADDING 2
 #define TASKBAR_HEIGHT  (BUTTON_HEIGHT + (TASKBAR_PADDING * 2) + 2)
 
-int cursor_x = 0;
-int cursor_y = 0;
+#define MOUSE_SENSITIVITY 0.25
+
+int cursor_x = 200;
+int cursor_y = 400;
 
 // Black, White, Transparent, End of Line
 // 11, 00, 01, 10
@@ -57,7 +60,7 @@ const uint8_t cursor[55] = {
 
   0b11001101, 0b01110000, 0b11100000,
   0b11110101, 0b01011100, 0b00111000,
-  0b11110101, 0b01011100, 0b00111000, // 9 += 46
+  0b01010101, 0b01011100, 0b00111000, // 9 += 46
 
   0b01010101, 0b01010111, 0b00001110, // 9 += 55
   0b01010101, 0b01010111, 0b00001110,
@@ -65,6 +68,10 @@ const uint8_t cursor[55] = {
 };
 
 void init_gui() {
+  render_gui();
+}
+
+void render_gui() {
   // Background
   fillscr(COLOR_CYAN);
 
@@ -76,9 +83,11 @@ void init_gui() {
 
   // Terminal top-most
   draw_terminal();
+}
 
+void render_cursor() {
   // Render cursor top most
-  draw_cursor(200, WINDOW_TITLE_HEIGHT-13);
+  draw_cursor(cursor_x, cursor_y);
 }
 
 /*
@@ -92,19 +101,31 @@ for (size_t row=0; row<8; row++) {
   }
 }
 */
+
+void gui_handle_mouse() {
+  int delta_x = mouse_x * MOUSE_SENSITIVITY;
+  int delta_y = (-mouse_y) * MOUSE_SENSITIVITY; // NOTE: mouse_y is negative because mouse y delta is flipped
+  int new_cursor_x = cursor_x + delta_x;
+  int new_cursor_y = cursor_y + delta_y;
+  if (new_cursor_x < framebuffer_width && new_cursor_x > 0) {
+    cursor_x = new_cursor_x;
+  }
+  if (new_cursor_y < framebuffer_width && new_cursor_y > 0) {
+    cursor_y = new_cursor_y;
+  } 
+  render_cursor();
+}
+
 void draw_cursor(uint32_t x, uint32_t y) {
   int len = sizeof(cursor);
   int x_offset = 0;
   int y_offset = 0;
-  printf("len: %d, x_offset: %d, y_offset: %d\n", len, x_offset, y_offset);
   uint8_t cursor_byte;
   for (int i=0; i<len; i++) {
     cursor_byte = (uint8_t) *(cursor + i);
-    printf("cursor byte: %08b\n", (uint8_t) cursor_byte);
     for (int j=0; j<4; j++) {
       // 0b11000000
       uint8_t current_pixel = ((cursor_byte & (0xC0 >> j*2)) >> ((3-j)*2));
-      printf("current pixel: %08b\n", (uint8_t) current_pixel);
       if (current_pixel == 0b11) { // Black
         putpixel(x + x_offset, y + y_offset, COLOR_BLACK);
         x_offset++;
