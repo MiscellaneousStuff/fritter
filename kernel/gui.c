@@ -11,12 +11,10 @@
 #include "sys/vesa.h"
 #include "sys/mouse.h"
 
-int cursor_x = 200;
-int cursor_y = 400;
-
 void render_gui();
 void draw_cursor();
 unsigned char cursor_sprite_buf[CURSOR_WIDTH * CURSOR_HEIGHT * CURSOR_BYTES_PER_PIXEL]; // NOTE: 4 is bytes per pixel
+void render_cursor();
 
 // Black, White, Transparent, End of Line
 // 11, 00, 01, 10

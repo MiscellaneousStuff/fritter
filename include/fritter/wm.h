@@ -9,6 +9,7 @@
 #define MAX_WINDOW_COUNT 64
 #define MAX_WINDOW_TITLE 100
 #define MAX_LABEL_TEXT 10
+#define MAX_TEXTBOX_BUFFER 128
 
 #define BACKGROUND_COLOR COLOR_CYAN
 
@@ -17,14 +18,18 @@ typedef enum { BUTTON, LABEL } component_type_t;
 typedef struct {
   uint32_t window_id;
   uint32_t id;
-  uint32_t type;
+  uint32_t x;
+  uint32_t y;
+  component_type_t type;
   uint32_t width;
   uint32_t height;
   void *component_data;
+  void *click_handler;
 } wm_component_t;
 
 typedef struct {
   char label[MAX_LABEL_TEXT];
+  bool pressed;
 } wm_button_t;
 
 typedef struct {
@@ -45,8 +50,10 @@ typedef struct {
 wm_window_t *windows[MAX_WINDOW_COUNT];
 wm_component_t *components[MAX_COMPONENT_COUNT];
 
-size_t cur_id;
+size_t cur_window_id;
 size_t window_count;
+size_t cur_component_id;
+size_t component_count;
 
 void init_wm();
 void add_window(wm_window_t *window);
