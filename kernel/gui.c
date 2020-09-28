@@ -37,6 +37,8 @@
 int cursor_x = 200;
 int cursor_y = 400;
 
+void draw_cursor();
+void gui_handle_mouse();
 unsigned char cursor_sprite_buf[CURSOR_WIDTH * CURSOR_HEIGHT * CURSOR_BYTES_PER_PIXEL]; // NOTE: 4 is bytes per pixel
 
 // Black, White, Transparent, End of Line
@@ -97,6 +99,9 @@ void render_cursor() {
 }
 
 void gui_handle_mouse() {
+  // Handle left and right click here
+  // printf("MB1: %d, MB2: %d\n", mouse_byte[0] & 0b01, mouse_byte[0] & 0b10);
+
   // Clear underneath mouse first
   pasterect(cursor_x, cursor_y, CURSOR_WIDTH, CURSOR_HEIGHT, cursor_sprite_buf);
 

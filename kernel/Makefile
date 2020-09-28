@@ -6,7 +6,7 @@ LD = i686-elf-ld
 LDFLAGS = -r -T ../misc/linker.ld
 
 OBJS = 	asm.o cli.o font.o gdt.o gui.o idt.o keyboard.o mouse.o printf.o rtc.o \
-				serial.o timer.o tty.o vesa.o
+				serial.o timer.o tty.o vesa.o wm.o
 
 all: kernel.o
 

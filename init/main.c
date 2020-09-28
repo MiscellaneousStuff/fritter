@@ -41,7 +41,8 @@ int kmain(multiboot_t *mb_info) {
   // Init Graphics
   init_vesa(mb_info);
   init_gui();
-
+  init_wm();
+  
   // Init CLI
   init_cli();
 
