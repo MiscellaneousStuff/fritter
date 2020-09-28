@@ -1,3 +1,4 @@
+#include <string.h>
 #include <stdbool.h>
 #include <stdint.h>
 
@@ -28,9 +29,9 @@ void mouse_handler(registers_t *regs) {
         cur_button_state[0] = false;
       }
       if (MOUSE_RIGHT_BUTTON(mouse_byte[0])) {
-        cur_button_state[1] = true;
+        cur_button_state[2] = true;
       } else {
-        cur_button_state[1] = false;
+        cur_button_state[2] = false;
       }
       mouse_cycle++;
       break;
@@ -47,15 +48,27 @@ void mouse_handler(registers_t *regs) {
   }
   if (mouse_cycle == 0) {
     mouse_event_t mouse_event;
+
+    // Determine event
     if (prev_button_state[0] == false, cur_button_state[0] == true) { // Left Button Down
       mouse_event = LEFT_DOWN;
     } else if (prev_button_state[0] == true, cur_button_state[0] == false) { // Left Button Up
       mouse_event = LEFT_UP;
-    } else if (prev_button_state[1] == false, cur_button_state[1] == true) { // Right Button Down
+    } else if (prev_button_state[2] == false, cur_button_state[2] == true) { // Right Button Down
       mouse_event = RIGHT_DOWN;
-    } else if (prev_button_state[1] == true, cur_button_state[1] == false) { // Right Button Up
+    } else if (prev_button_state[2] == true, cur_button_state[2] == false) { // Right Button Up
       mouse_event = RIGHT_UP;
     }
+
+    // Previous state becomes current state
+    memcpy(prev_button_state, cur_button_state, 3);
+
+    // Current state becomes empty
+    memset(cur_button_state, 0x00, 3);
+
+    // Notify GUI of event (NOTE: Currently hardcoded because doing this
+    //                            another way requires the OS to
+    //                            support message parsing)
     gui_handle_mouse(mouse_event);
   }
 }

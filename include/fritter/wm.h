@@ -27,6 +27,7 @@ typedef struct {
   uint32_t height;
   void *component_data;
   void *left_down_handler;
+  bool pressed;
 } wm_component_t;
 
 typedef struct {

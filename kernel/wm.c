@@ -50,6 +50,10 @@ void close_handler(wm_window_t *window) {
   render_screen();
 }
 
+void window_click_handler(wm_window_t *window) {
+  window->focused = true;
+}
+
 inline void first_window(uint32_t window_id, uint32_t x, uint32_t y, const char *title) {
   // Window
   static wm_window_t alert_window = { 0, 0, 0, 200, 100, "", false, 0 };
@@ -239,80 +243,95 @@ void render_window(wm_window_t *window) {
 }
 
 void wm_handle_mouse(mouse_event_t mouse_event) {
+  printf("Mouse Event: %d\n", mouse_event);
+
+  // Used to re-render taskbar if window focus changes
   bool window_focus_change = false;
   
+  // Window and component holders
   wm_window_t *window;
   wm_component_t *component;
 
-  for (size_t i=0; i<MAX_WINDOW_COUNT; i++) {
-    window = windows[i];
-    if (window) {
-      bool x_overlap = overlaps(cursor_x, window->x, window->x + window->width);
-      bool y_overlap = overlaps(cursor_y, window->y, window->y + window->height);
-      bool overlap = x_overlap && y_overlap;
-      if (overlap) {
-        switch (mouse_event) {
-          case LEFT_DOWN:
-            // Update window focus
+  switch (mouse_event) {
+    // Mouse down events must overlap corresponding window and/or component
+    case LEFT_DOWN:
+    case RIGHT_DOWN:
+      for (size_t i=0; i<MAX_WINDOW_COUNT; i++) {
+        window = windows[i];
+        if (window) {
+          // Check if cursor overlaps window when clicking down on screen
+          bool x_overlap_window = overlaps(cursor_x, window->x, window->x + window->width);
+          bool y_overlap_window = overlaps(cursor_y, window->y, window->y + window->height);
+          bool overlap_window = x_overlap_window && y_overlap_window;
+          
+          // Window does overlap...
+          if (overlap_window) {
+
+            // Switch focus to window
             window->focused = true;
             window_focus_change = true;
-            
+
+            // Dispatch events to window
+            // TODO: Event dispatching for a window
+
             // Dispatch events to relevant components
             for (size_t j=0; j<MAX_COMPONENT_COUNT; j++) {
               component = components[j];
               if (component) {
+                // Make sure component belongs to this window
                 if (component->window_id == window->id) {
+                  // Check if cursor overlaps component when clicking down on window
                   int component_relative_x = cursor_x-window->x-WINDOW_BORDER-WINDOW_PADDING;
                   int component_relative_y = cursor_y-window->y-WINDOW_TITLE_HEIGHT-WINDOW_BORDER-WINDOW_PADDING;
-                  x_overlap = overlaps(component_relative_x, component->x, component->x + component->width);
-                  y_overlap = overlaps(component_relative_y, component->y, component->y + component->height);
-                  overlap = x_overlap && y_overlap;
-                  /*
-                  printf(
-                    "Component Overlap: %d, %d, %d, %d, %d, %d, %d, %d, %d\n",
-                    component_relative_x,
-                    component_relative_y,
-                    x_overlap,
-                    y_overlap,
-                    component->x-3,
-                    component->x + component->width,
-                    component->y,
-                    component->y + component->height,
-                    component->type
-                  );
-                  */
-                  if (overlap) {
-                    if (component->left_down_handler != NULL) {
-                      //printf("COMPONENT CLICK HANDLER: %x\n", component->left_down_handler);
-                      void (*handler)(wm_window_t *) = (component->left_down_handler);
-                      handler(window);
+                  bool x_overlap_component = overlaps(component_relative_x, component->x, component->x + component->width);
+                  bool y_overlap_component = overlaps(component_relative_y, component->y, component->y + component->height);
+                  bool overlap_component = x_overlap_component && y_overlap_component;
+
+                  // Component does overlap...
+                  if (overlap_component) {
+
+                    // Dispatch left down
+                    if (mouse_event == LEFT_DOWN && component->left_down_handler != NULL) {
+                      void (*left_down_handler)(wm_window_t *) = (component->left_down_handler);
+                      left_down_handler(window);
                     }
-                 }
+
+                    // Dispatch mouse right down
+                    // TODO: Dispatch mouse right down
+                  }
                 }
               }
             }
-
-            // Re-render all windows
-            render_windows();
-            break;
-          case RIGHT_DOWN:
-            // draw_alert(window->title, "Right Click");
-            break;
-          case LEFT_DRAG:
-            // draw_alert(window->title, "Left Drag");
-            // Move window here
-            break;
-          case MOVING:
-            break;
-          case RIGHT_DRAG:
-            break;
+          } else {
+            window->focused = false;
+          }
         }
-      } else {
-        window->focused = false;
       }
-    }
+      break;
   }
   if (window_focus_change) {
     render_taskbar();
+    render_windows();
   }
 }
+
+/*
+SWITCH (MOUSE_EVENT)
+  CASE LEFT_DOWN
+  CASE RIGHT_DOWN
+    FOR EACH WINDOW AS W WHICH OVERLAPS MOUSE (MOUSE DOWN)
+      FOR EACH WINDOW EVENT AS WE
+        TRIGGER WE
+      FOR EACH COMPONENT AS C WHICH OVERLAPS MOUSE (MOUSE DOWN)
+        FOR EACH COMPONENT EVENT AS CE
+          TRIGGER CE
+  CASE LEFT_DRAG
+  CASE RIGHT_DRAG
+  CASE LEFT_UP
+  CASE RIGHT_UP
+    FOR WINDOW IN FOCUS
+      FOR EACH WINDOW EVENT AS WE
+        TRIGGER WE
+      FOR EACH COMPONENT EVENT AS CE
+        TRIGGER CE
+*/
