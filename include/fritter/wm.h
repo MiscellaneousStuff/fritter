@@ -11,6 +11,8 @@
 #define MAX_LABEL_TEXT 10
 #define MAX_TEXTBOX_BUFFER 128
 
+#define CLOSE_BUTTON_SIZE 16
+
 #define BACKGROUND_COLOR COLOR_CYAN
 
 typedef enum { BUTTON, LABEL } component_type_t;

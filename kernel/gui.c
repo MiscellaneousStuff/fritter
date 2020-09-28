@@ -275,7 +275,17 @@ void draw_button(uint32_t x, uint32_t y, uint32_t width, uint32_t height, const 
   // If text isn't empty, render it in the center of the button
   size_t label_len = strlen(text);
   if (label_len > 0) {
-    int label_x = x + (((x + width) - x) / 2) - ((label_len/2) * 8);
+    /* 
+      NOTE:
+      This adds extra width to a string with an odd number of characters.
+      This is needed because floating point division hasn't currently been
+      implemented so (label_len / 2) is integer divison meaning that the
+      starting x_offset for rendering the label always truncates the last
+      character meaning label is rendered slightly right of where is should
+    */        
+    int remainder = label_len % 2;
+
+    int label_x = x + (((x + width) - x) / 2) - ((label_len/2) * 8) - (remainder * 4);
     int label_y = y + (((y + height) - y) / 2) - 4;
     draw_label(label_x, label_y, text, COLOR_BLACK);
   }
