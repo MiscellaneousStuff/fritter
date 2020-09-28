@@ -9,6 +9,8 @@
 #define MAX_WINDOW_TITLE 100
 #define MAX_BUTTON_TEXT 10
 
+#define BACKGROUND_COLOR COLOR_CYAN
+
 enum component_type { button };
 
 typedef struct {

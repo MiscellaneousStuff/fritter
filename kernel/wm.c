@@ -1,9 +1,12 @@
 #include <string.h>
+#include <sys/vesa.h>
 #include <fritter/wm.h>
 
 #include "gui.h"
 
 void render_window(wm_window_t *window);
+void render_screen();
+void render_taskbar();
 
 void init_wm() {
   // Init Window Manager settings
@@ -19,9 +22,8 @@ void init_wm() {
   wm_window_t windowB = { 0, 10, 450, 100, 100, "Window B" };
   add_window(&windowB);
 
-  // Render windows
-  // render_window(windows[0]);
-  render_windows();
+  // Render screen
+  render_screen();
 }
 
 void add_window(wm_window_t *window) {
@@ -30,8 +32,39 @@ void add_window(wm_window_t *window) {
 }
 
 void render_screen() {
-  // Render windows first, everything else goes on top
+  // Background
+  fillscr(BACKGROUND_COLOR);
+
+  // Taskbar
+  render_taskbar();
+
+  // Terminal top-most
+  draw_terminal();
+
+  // Windows
   render_windows();
+}
+
+void render_taskbar() {
+  // Draw taskbar base
+  draw_taskbar();
+
+  // Draw button for each open window
+  uint32_t start_button_offset = 2 + BUTTON_WIDTH + 4;
+  size_t window_count = 0;
+  wm_window_t *window;
+  for (size_t i=0; i<MAX_WINDOW_COUNT; i++) {
+    window = windows[i];
+    if (window) {
+      draw_button(
+        start_button_offset + 2 + ((BUTTON_WIDTH*2 + 4) * window_count++),
+        framebuffer_height - (BUTTON_HEIGHT + TASKBAR_PADDING),
+        BUTTON_WIDTH * 2,
+        BUTTON_HEIGHT,
+        window->title
+      );
+    }
+  }
 }
 
 void render_windows() {

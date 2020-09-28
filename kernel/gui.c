@@ -8,32 +8,6 @@
 #include "sys/vesa.h"
 #include "sys/mouse.h"
 
-#define COLOR_WHITE     0xFFFFFF
-#define COLOR_BLACK     0x000000
-#define COLOR_BLUE      0x010080
-#define COLOR_RED       0xFF0000
-#define COLOR_CYAN      0x008080
-
-#define BG_COLOR        0xC0C0C0
-#define LIGHT_INSERT    0xDFDFDF
-#define DARK_INSERT     0x808080
-
-#define ALERT_WIDTH    300
-#define ALERT_HEIGHT   120
-
-#define WINDOW_TITLE_HEIGHT 20
-
-#define BUTTON_HEIGHT   25
-#define BUTTON_WIDTH    75
-
-#define TASKBAR_PADDING 2
-#define TASKBAR_HEIGHT  (BUTTON_HEIGHT + (TASKBAR_PADDING * 2) + 2)
-
-#define CURSOR_SENSITIVITY      0.25
-#define CURSOR_WIDTH            12
-#define CURSOR_HEIGHT           21
-#define CURSOR_BYTES_PER_PIXEL  4 // NOTE: This is needed until malloc() is implemented
-
 int cursor_x = 200;
 int cursor_y = 400;
 
@@ -75,22 +49,8 @@ const uint8_t cursor[55] = {
 };
 
 void init_gui() {
-  render_gui();
   copyrect(cursor_x, cursor_y, CURSOR_WIDTH, CURSOR_HEIGHT, cursor_sprite_buf);
-}
-
-void render_gui() {
-  // Background
-  fillscr(COLOR_CYAN);
-
-  // Taskbar
-  draw_taskbar();
-
-  // Example Window
-  draw_alert("Example Alert", "Serious stuff has happened...");
-
-  // Terminal top-most
-  draw_terminal();
+  render_cursor();
 }
 
 void render_cursor() {
