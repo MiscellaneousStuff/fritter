@@ -1,6 +1,8 @@
 #ifndef __GUI_H__
 #define __GUI_H__
 
+#include <stdbool.h>
+
 #define COLOR_WHITE     0xFFFFFF
 #define COLOR_BLACK     0x000000
 #define COLOR_BLUE      0x010080
@@ -15,6 +17,9 @@
 #define ALERT_HEIGHT   120
 
 #define WINDOW_TITLE_HEIGHT 20
+
+#define WINDOW_TITLE_INACTIVE_COLOR   0x6D6D99
+#define WINDOW_TITLE_ACTIVE_COLOR     COLOR_BLUE
 
 #define BUTTON_HEIGHT   25
 #define BUTTON_WIDTH    75
@@ -35,9 +40,10 @@ void draw_terminal_char(char c, unsigned int x, unsigned int y);
 void clear_terminal();
 void draw_taskbar();
 void draw_button(uint32_t x, uint32_t y, uint32_t width, uint32_t height, const char *text);
+void draw_pressed_button(uint32_t x, uint32_t y, uint32_t width, uint32_t height, const char *text);
 void draw_inverted_button(uint32_t x, uint32_t y, uint32_t width, uint32_t height, const char *text);
 void draw_alert(const char *title, const char *msg);
-void draw_window(uint32_t x, uint32_t y, uint32_t width, uint32_t height, const char *title);
+void draw_window(uint32_t x, uint32_t y, uint32_t width, uint32_t height, const char *title, bool focused);
 void draw_label(uint32_t x, uint32_t y, const char *text, uint32_t color);
 void draw_terminal();
 void gui_handle_mouse();

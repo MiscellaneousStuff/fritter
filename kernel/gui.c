@@ -1,3 +1,4 @@
+#include <stdbool.h>
 #include <stdint.h>
 #include <stddef.h>
 #include <string.h>
@@ -159,7 +160,7 @@ void draw_terminal_char(char c, unsigned int x, unsigned int y) {
 
 void draw_terminal() {
   // Draw window
-  draw_window(5, 5, (80*8) + 10, (WINDOW_TITLE_HEIGHT+10) + (25*8), "Terminal");
+  draw_window(5, 5, (80*8) + 10, (WINDOW_TITLE_HEIGHT+10) + (25*8), "Terminal", false);
 
   // Draw Background
   clear_terminal();
@@ -174,7 +175,7 @@ void draw_alert(const char *title, const char *msg) {
   uint32_t button_y = (window_y + ALERT_HEIGHT) - BUTTON_HEIGHT - 6;
 
   // Draw window first
-  draw_window(window_x, window_y, ALERT_WIDTH, ALERT_HEIGHT, title);
+  draw_window(window_x, window_y, ALERT_WIDTH, ALERT_HEIGHT, title, false);
 
   // Draw message
   draw_label(window_x + 10, window_y + 10 + WINDOW_TITLE_HEIGHT, msg, COLOR_BLACK);
@@ -188,7 +189,7 @@ void draw_label(uint32_t x, uint32_t y, const char *text, uint32_t color) {
   draw_string(x, y, text, color);
 }
 
-void draw_window(uint32_t x, uint32_t y, uint32_t width, uint32_t height, const char *title) {
+void draw_window(uint32_t x, uint32_t y, uint32_t width, uint32_t height, const char *title, bool focused) {
   // Draw background
   fillrect(x, y, width, height, BG_COLOR);
 
@@ -200,7 +201,11 @@ void draw_window(uint32_t x, uint32_t y, uint32_t width, uint32_t height, const 
   horline(x+1, y+height-2, width-2, DARK_INSERT); // Inner bottom border
 
   // Draw titlebar background and text
-  fillrect(x+3, y+3, width-6, WINDOW_TITLE_HEIGHT, COLOR_BLUE);
+  if (focused) {
+    fillrect(x+3, y+3, width-6, WINDOW_TITLE_HEIGHT, WINDOW_TITLE_ACTIVE_COLOR);
+  } else {
+    fillrect(x+3, y+3, width-6, WINDOW_TITLE_HEIGHT, WINDOW_TITLE_INACTIVE_COLOR);
+  }
   draw_label(x+9, y+9, title, COLOR_WHITE);
 }
 
@@ -218,6 +223,35 @@ void draw_taskbar() {
   char buf[100];
   itoa(year, buf, 10);
   draw_inverted_button(framebuffer_width - BUTTON_WIDTH - 2, framebuffer_height - BUTTON_HEIGHT - 2, BUTTON_WIDTH, BUTTON_HEIGHT, buf);
+}
+
+void draw_pressed_button(uint32_t x, uint32_t y, uint32_t width, uint32_t height, const char *text) {
+  // Background
+  fillrect(x, y, width, height, BG_COLOR);
+
+  // Draw left and inner left
+  verline(x, y, height-1, COLOR_BLACK);
+  verline(x+1, y+1, height-2, DARK_INSERT);
+
+  // Draw top and inner top
+  horline(x, y, width-1, COLOR_BLACK);
+  horline(x+1, y+1, width-3, DARK_INSERT);
+
+  // Draw bottom and inner bottom
+  horline(x, y+height-1, width, COLOR_WHITE);
+  horline(x+1, y+height-2, width-2, BG_COLOR);
+
+  // Draw right and inner right
+  verline(x+width-1, y, height, COLOR_WHITE);
+  verline(x+width-2, y+1, height-2, BG_COLOR);
+
+  // If text isn't empty, render it in the center of the button
+  size_t label_len = strlen(text);
+  if (label_len > 0) {
+    int label_x = x + (((x + width) - x) / 2) - ((label_len/2) * 8);
+    int label_y = y + (((y + height) - y) / 2) - 4;
+    draw_label(label_x, label_y, text, COLOR_BLACK);
+  }
 }
 
 void draw_button(uint32_t x, uint32_t y, uint32_t width, uint32_t height, const char *text) {

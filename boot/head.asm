@@ -7,8 +7,8 @@ MAGIC    equ  0x1BADB002        ; 'magic number' lets bootloader find the header
 CHECKSUM equ -(MAGIC + FLAGS)   ; checksum of above, to prove we are multiboot
 
 ; Graphics Definitions
-WIDTH equ 800 ; 640, 800
-HEIGHT equ 600 ; 480, 600
+WIDTH equ 800 ; 640, 800, 1024
+HEIGHT equ 600 ; 480, 600, 768
 BPP equ 32
 
 global mboot
