@@ -27,7 +27,7 @@ int kmain(multiboot_t *mb_info) {
   read_rtc();
 
   // Init screen
-  init_tty(80, 25);
+  // init_tty(80, 25);
 
   // Enable Interrupts
   asm volatile("sti");
@@ -45,7 +45,7 @@ int kmain(multiboot_t *mb_info) {
   init_wm();
   
   // Init CLI
-  init_cli();
+  // init_cli();
 
   // Wait for timing events
   for (;;) {

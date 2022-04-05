@@ -4,6 +4,8 @@ LDFLAGS = -T misc/linker.ld
 OBJS = boot/boot.o init/init.o kernel/kernel.o
 LIBS = lib/lib.a
 
+QEMU = qemu-system-i386.exe
+
 all: kernel.elf
 
 boot/boot.o:
@@ -22,16 +24,16 @@ kernel.elf: $(OBJS) $(LIBS)
 	$(LD) $(LDFLAGS) $(OBJS) $(LIBS) -o kernel.elf
 
 run: kernel.elf
-	qemu-system-i386 -kernel kernel.elf
+	$(QEMU) -kernel kernel.elf
 
 run-iso: fritter.iso
-	qemu-system-i386 -cdrom fritter.iso
+	$(QEMU) -cdrom fritter.iso
 
 fritter.iso: kernel.elf
 	mkdir -p isodir/boot/grub
 	cp kernel.elf isodir/boot/kernel.elf
 	cp misc/grub.cfg isodir/boot/grub/grub.cfg
-	grub-mkrescue -o fritter.iso isodir
+	grub-mkrescue -o fritter.iso isodir/
 
 clean:
 	(cd boot; make clean)
